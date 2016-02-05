@@ -29,5 +29,5 @@ public interface MovieDbService {
 
     @GET("/3/discover/movie")
     void getMoviesList(@Query("sort_by") String sort_type,
-                      @Query("api_key") String api_key, @Query("page") int page, Callback<BaseResponseBean> callback);
+                       @Query("api_key") String api_key, @Query("page") int page, Callback<BaseResponseBean> callback);
 }

@@ -24,16 +24,16 @@ import me.albinmathew.celluloid.app.CelluloidApp;
  * @author albin
  * @date 2/2/16
  */
-public class MoviesApi extends BaseApi  {
+public class MoviesApi extends BaseApi {
 
     private BaseAPIListener otBaseApiListener = null;
 
     public MoviesApi() {
     }
 
-    public void  fetchMoviesList(BaseAPIListener apiListener,String sortOrder, int pageCount){
+    public void fetchMoviesList(BaseAPIListener apiListener, String sortOrder, int pageCount) {
         otBaseApiListener = apiListener;
-        CelluloidApp.getRestClient().getMovieDbService().getMoviesList(sortOrder, CAConstants.API_KEY,pageCount,this);
+        CelluloidApp.getRestClient().getMovieDbService().getMoviesList(sortOrder, CAConstants.API_KEY, pageCount, this);
     }
 
     public void clearListener() {

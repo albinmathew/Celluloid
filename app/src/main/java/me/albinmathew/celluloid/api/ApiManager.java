@@ -20,7 +20,6 @@ import android.support.annotation.NonNull;
 
 import me.albinmathew.celluloid.api.base.BaseApi;
 import me.albinmathew.celluloid.api.base.BaseResponseBean;
-import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import retrofit.RetrofitError;
 
 /**
@@ -40,6 +39,7 @@ public class ApiManager {
         }
         return sApiManager;
     }
+
     @NonNull
     private MoviesApi getMoviesApi() {
         if (mMoviesApi != null) {
@@ -63,11 +63,10 @@ public class ApiManager {
         getMoviesApi().fetchMoviesList(new BaseApi.BaseAPIListener() {
             @Override
             public void requestCompleted(BaseResponseBean response) {
-                MoviesResponseBean responseBean = (MoviesResponseBean) response;
                 isMoviesAPILoading = false;
                 // return data
                 if (apiFetchListener != null) {
-                    apiFetchListener.completed(responseBean);
+                    apiFetchListener.completed(response);
                     apiFetchListener = null;
                 }
             }
@@ -76,7 +75,7 @@ public class ApiManager {
             public void requestFailed(RetrofitError error) {
                 // return error
                 if (apiFetchListener != null) {
-                    apiFetchListener.failed(error.getResponse().getReason());
+                    apiFetchListener.failed(error.getMessage());
                     apiFetchListener = null;
                 }
             }

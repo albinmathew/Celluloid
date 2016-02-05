@@ -16,9 +16,11 @@
 
 package me.albinmathew.celluloid.ui.activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,19 +28,44 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
 import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.adapter.MoviesAdapter;
-import me.albinmathew.celluloid.models.Movies;
+import me.albinmathew.celluloid.api.ApiManager;
+import me.albinmathew.celluloid.api.base.BaseResponseBean;
+import me.albinmathew.celluloid.api.response.MoviesResponseBean;
+import me.albinmathew.celluloid.app.CAConstants;
+import me.albinmathew.celluloid.listener.ControlLayerListener;
+import me.albinmathew.celluloid.listener.HidingScrollListener;
+import me.albinmathew.celluloid.listener.RecyclerViewScrollListener;
+import me.albinmathew.celluloid.listener.SortSelectListener;
+import me.albinmathew.celluloid.ui.fragments.SortDialogFragment;
+import me.albinmathew.celluloid.utilities.NetworkUtil;
 
 /**
  * @author albin
  * @date 2/2/16
  */
 
-public class MoviesActivity extends AppCompatActivity {
+public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener,
+        ControlLayerListener,SortSelectListener{
+
+    private MoviesAdapter mMoviesAdapter;
+    private RecyclerView mRecyclerView;
+    private GridLayoutManager mGridLayoutManager;
+    private  int pageCount = 0;
+    private SwipeRefreshLayout swipeLayout;
+    private ProgressDialog progressDialog;
+    private RelativeLayout mFilterPanelLinearLayout;
+    private ControlLayerListener mControlLayerListener = this;
+    private String mCurrentSortSelection = CAConstants.POPULARITY;
+    private boolean sorted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,46 +74,182 @@ public class MoviesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        ArrayList<Movies> movieList = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-            Movies movies = new Movies();
-            movies.setId(i);
-            movies.setName("Name" + i);
-            movieList.add(movies);
-        }
-        MoviesAdapter mMoviesAdapter = new MoviesAdapter(this, movieList);
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mFilterPanelLinearLayout = (RelativeLayout) findViewById(R.id.sort_layout);
+
+        mGridLayoutManager =  new GridLayoutManager(this,2);
+        mLoadMoreEndlessScrolling.setGridLayoutManager(mGridLayoutManager);
+
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mRecyclerView.addOnScrollListener(mLoadMoreEndlessScrolling);
+
+        mMoviesAdapter = new MoviesAdapter(this,new ArrayList<MoviesResponseBean>());
         mRecyclerView.setAdapter(mMoviesAdapter);
+
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeLayout.setOnRefreshListener(this);
+        swipeLayout.setColorSchemeResources(android.R.color.holo_red_light,
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_dark);
+
+        if(NetworkUtil.hasInternetAccess(this)){
+            retrieveMovieList(mCurrentSortSelection,++pageCount);
+        }else{
+           showSnackbar();
+        }
+    }
+
+    private void retrieveMovieList(final String sortOrder,int pageCount) {
+        ApiManager.getInstance().fetchMoviesList(new ApiManager.ProgressListener<BaseResponseBean>() {
+            @Override
+            public void inProgress() {
+                progressDialog =   new ProgressDialog(MoviesActivity.this);
+                progressDialog.setMessage("Please Wait..");
+                progressDialog.show();
+            }
+
+            @Override
+            public void failed(String message) {
+                if(progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+                showSnackbar();
+            }
+
+            @Override
+            public void completed(BaseResponseBean responseBean) {
+                if(progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+                ArrayList<MoviesResponseBean> moviesArrayList = (ArrayList<MoviesResponseBean>) responseBean.getResults();
+                if(sorted){
+                    sorted = false;
+                    mMoviesAdapter.getMoviesList().clear();
+                    mMoviesAdapter.getMoviesList().addAll(moviesArrayList);
+                }else{
+                    mMoviesAdapter.getMoviesList().addAll(moviesArrayList);
+                }
+                mMoviesAdapter.notifyDataSetChanged();
+                mRecyclerView.swapAdapter(mMoviesAdapter,false);
+            }
+        },sortOrder,pageCount);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    private RecyclerViewScrollListener mLoadMoreEndlessScrolling = new RecyclerViewScrollListener(mGridLayoutManager) {
+        @Override
+        public void onLoadMore() {
+            if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
+                retrieveMovieList(mCurrentSortSelection,++pageCount);
+            }else{
+                showSnackbar();
+            }
+        }
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (mControlLayerListener != null) {
+                    mControlLayerListener.showControls();
+                }
+            } else {
+                if (mControlLayerListener != null) {
+                    mControlLayerListener.hideControls();
+                }
+            }
+        }
+    };
+
+    private HidingScrollListener mFilterPanelScrollListener = new HidingScrollListener() {
+        @Override
+        public void onHide() {
+            if (mControlLayerListener != null) {
+                mControlLayerListener.hideControls();
+            }
+        }
+
+        @Override
+        public void onShow() {
+            if (mControlLayerListener != null) {
+                mControlLayerListener.showControls();
+            }
+        }
+    };
+
+
+    @Override
+    public void showControls() {
+        mFilterPanelLinearLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+    }
+
+    @Override
+    public void hideControls() {
+        mFilterPanelLinearLayout.animate().translationY(mFilterPanelLinearLayout.getHeight()).
+                setInterpolator(new AccelerateInterpolator(2));
+    }
+
+    private void showSnackbar(){
+        Snackbar.make(findViewById(android.R.id.content), "Check internet connectivity", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_movies, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                swipeLayout.setRefreshing(false);
+                if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
+                    pageCount = 0;
+                    sorted = false;
+                    retrieveMovieList(mCurrentSortSelection,++pageCount);
+                }else{
+                    showSnackbar();
+                }
+            }
+        },1000);
+
+    }
+
+    public void onSortClick(View view) {
+        SortDialogFragment sortDialogFragment = SortDialogFragment.newInstance();
+        sortDialogFragment.setSortSelectListener(this);
+        sortDialogFragment.show(getFragmentManager(),null);
+    }
+
+    public void onFilterClick(View view) {
+    }
+
+    @Override
+    public void onSortCategorySelected(String selection) {
+        mCurrentSortSelection = selection;
+        sorted = true;
+        if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
+            pageCount=0;
+            retrieveMovieList(mCurrentSortSelection,++pageCount);
+        }else{
+            showSnackbar();
+        }
     }
 }

@@ -30,11 +30,6 @@ public abstract class BaseApi implements Callback<BaseResponseBean> {
 
     public abstract BaseAPIListener getApiListener();
 
-    public interface BaseAPIListener {
-        void requestCompleted(BaseResponseBean response);
-        void requestFailed(RetrofitError error);
-    }
-
     @Override
     public void success(BaseResponseBean responseBean, Response response) {
         if (getApiListener() != null) {
@@ -47,5 +42,11 @@ public abstract class BaseApi implements Callback<BaseResponseBean> {
         if (getApiListener() != null) {
             getApiListener().requestFailed(error);
         }
+    }
+
+    public interface BaseAPIListener {
+        void requestCompleted(BaseResponseBean response);
+
+        void requestFailed(RetrofitError error);
     }
 }

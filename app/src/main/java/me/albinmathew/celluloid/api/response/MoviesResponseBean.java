@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.api.response;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -26,7 +27,7 @@ import me.albinmathew.celluloid.api.base.BaseResponseBean;
  * @author albin
  * @date 2/2/16
  */
-public class MoviesResponseBean extends BaseResponseBean {
+public class MoviesResponseBean extends BaseResponseBean implements Parcelable {
 
     @SerializedName("poster_path")
     private String posterPath;
