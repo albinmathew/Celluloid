@@ -40,6 +40,10 @@ public class SortDialogFragment extends DialogFragment {
     private RadioButton mButtonPopularity;
     private RadioButton mButtonRating;
     private SortSelectListener mSortSelectListener;
+    private String mCurrentSortOrder;
+
+    public SortDialogFragment() {
+    }
 
     public static SortDialogFragment newInstance() {
         return new SortDialogFragment();
@@ -59,7 +63,6 @@ public class SortDialogFragment extends DialogFragment {
         setUpViews(mDialog);
         onClickListeners();
         mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        mDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         mDialog.setCancelable(false);
         mDialog.show();
         return mDialog;
@@ -69,7 +72,10 @@ public class SortDialogFragment extends DialogFragment {
         mButtonPopularity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSortSelectListener!=null){
+                if (mSortSelectListener != null) {
+                    if(!getCurrentSortOrder().equals(CAConstants.POPULARITY)){
+                        mButtonPopularity.toggle();
+                    }
                     mSortSelectListener.onSortCategorySelected(CAConstants.POPULARITY);
                     mDialog.dismiss();
                 }
@@ -78,7 +84,10 @@ public class SortDialogFragment extends DialogFragment {
         mButtonRating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSortSelectListener!=null){
+                if (mSortSelectListener != null) {
+                    if(!getCurrentSortOrder().equals(CAConstants.VOTE_AVERAGE)){
+                        mButtonRating.toggle();
+                    }
                     mSortSelectListener.onSortCategorySelected(CAConstants.VOTE_AVERAGE);
                     mDialog.dismiss();
                 }
@@ -89,6 +98,11 @@ public class SortDialogFragment extends DialogFragment {
     private void setUpViews(Dialog dialog) {
         mButtonRating = (RadioButton) dialog.findViewById(R.id.button_sort_mostrated);
         mButtonPopularity = (RadioButton) dialog.findViewById(R.id.button_sort_popularity);
+        if(getCurrentSortOrder().equals(CAConstants.POPULARITY)){
+           mButtonPopularity.toggle();
+        }else{
+            mButtonRating.toggle();
+        }
     }
 
     @Override
@@ -98,5 +112,13 @@ public class SortDialogFragment extends DialogFragment {
 
     public void setSortSelectListener(SortSelectListener mSortSelectListener) {
         this.mSortSelectListener = mSortSelectListener;
+    }
+
+    public String getCurrentSortOrder() {
+        return mCurrentSortOrder;
+    }
+
+    public void setCurrentSortOrder(String mCurrentSortOrder) {
+        this.mCurrentSortOrder = mCurrentSortOrder;
     }
 }

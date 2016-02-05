@@ -58,7 +58,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     private MoviesAdapter mMoviesAdapter;
     private RecyclerView mRecyclerView;
     private GridLayoutManager mGridLayoutManager;
-    private  int pageCount = 0;
+    private  int mPageCount = 0;
     private SwipeRefreshLayout swipeLayout;
     private ProgressDialog progressDialog;
     private RelativeLayout mFilterPanelLinearLayout;
@@ -94,13 +94,13 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
                 android.R.color.holo_orange_dark);
 
         if(NetworkUtil.hasInternetAccess(this)){
-            retrieveMovieList(mCurrentSortSelection,++pageCount);
+            retrieveMovieList(mCurrentSortSelection, getPageCount()+1);
         }else{
            showSnackbar();
         }
     }
 
-    private void retrieveMovieList(final String sortOrder,int pageCount) {
+    private void retrieveMovieList(final String sortOrder, final int pageCount) {
         ApiManager.getInstance().fetchMoviesList(new ApiManager.ProgressListener<BaseResponseBean>() {
             @Override
             public void inProgress() {
@@ -123,13 +123,12 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
                     progressDialog.dismiss();
                 }
                 ArrayList<MoviesResponseBean> moviesArrayList = (ArrayList<MoviesResponseBean>) responseBean.getResults();
+                mPageCount = responseBean.getPage();
                 if(sorted){
-                    sorted = false;
                     mMoviesAdapter.getMoviesList().clear();
-                    mMoviesAdapter.getMoviesList().addAll(moviesArrayList);
-                }else{
-                    mMoviesAdapter.getMoviesList().addAll(moviesArrayList);
                 }
+                sorted = false;
+                mMoviesAdapter.getMoviesList().addAll(moviesArrayList);
                 mMoviesAdapter.notifyDataSetChanged();
                 mRecyclerView.swapAdapter(mMoviesAdapter,false);
             }
@@ -145,7 +144,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         @Override
         public void onLoadMore() {
             if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
-                retrieveMovieList(mCurrentSortSelection,++pageCount);
+                retrieveMovieList(mCurrentSortSelection, getPageCount()+1);
             }else{
                 showSnackbar();
             }
@@ -221,9 +220,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
             public void run() {
                 swipeLayout.setRefreshing(false);
                 if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
-                    pageCount = 0;
-                    sorted = false;
-                    retrieveMovieList(mCurrentSortSelection,++pageCount);
+                    retrieveMovieList(mCurrentSortSelection,1);
                 }else{
                     showSnackbar();
                 }
@@ -235,7 +232,8 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     public void onSortClick(View view) {
         SortDialogFragment sortDialogFragment = SortDialogFragment.newInstance();
         sortDialogFragment.setSortSelectListener(this);
-        sortDialogFragment.show(getFragmentManager(),null);
+        sortDialogFragment.setCurrentSortOrder(mCurrentSortSelection);
+        sortDialogFragment.show(getFragmentManager(), null);
     }
 
     public void onFilterClick(View view) {
@@ -244,12 +242,15 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     @Override
     public void onSortCategorySelected(String selection) {
         mCurrentSortSelection = selection;
-        sorted = true;
         if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
-            pageCount=0;
-            retrieveMovieList(mCurrentSortSelection,++pageCount);
+            sorted = true;
+            retrieveMovieList(mCurrentSortSelection, 1);
         }else{
             showSnackbar();
         }
     }
+    public int getPageCount() {
+        return mPageCount;
+    }
+
 }
