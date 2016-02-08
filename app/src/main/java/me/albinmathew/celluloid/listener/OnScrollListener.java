@@ -20,10 +20,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /**
+ * The type On scroll listener.
+ *
  * @author albin
- * @date 3/2/16
+ * @date 3 /2/16
  */
-public abstract class RecyclerViewScrollListener extends RecyclerView.OnScrollListener {
+public abstract class OnScrollListener extends RecyclerView.OnScrollListener {
     private int mFirstVisibleItem, mVisibleItemCount, mTotalItemCount;
     private int mPreviousTotal = 0; // The total number of items in the dataset after the last load
     private boolean mIsLoading = true; // True if we are still waiting for the last set of data to load.
@@ -31,10 +33,20 @@ public abstract class RecyclerViewScrollListener extends RecyclerView.OnScrollLi
 
     private GridLayoutManager mGridLayoutManager;
 
-    public RecyclerViewScrollListener(GridLayoutManager gridLayoutManager) {
+    /**
+     * Instantiates a new On scroll listener.
+     *
+     * @param gridLayoutManager the grid layout manager
+     */
+    public OnScrollListener(GridLayoutManager gridLayoutManager) {
         this.mGridLayoutManager = gridLayoutManager;
     }
 
+    /**
+     * Sets grid layout manager.
+     *
+     * @param gridLayoutManager the grid layout manager
+     */
     public void setGridLayoutManager(GridLayoutManager gridLayoutManager) {
         this.mGridLayoutManager = gridLayoutManager;
 
@@ -63,8 +75,14 @@ public abstract class RecyclerViewScrollListener extends RecyclerView.OnScrollLi
         }
     }
 
+    /**
+     * On load more.
+     */
     public abstract void onLoadMore();
 
+    /**
+     * Clear item count variables.
+     */
     public void clearItemCountVariables() {
         mVisibleItemCount = 0;
         mTotalItemCount = 0;

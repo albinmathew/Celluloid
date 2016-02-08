@@ -21,13 +21,23 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
+ *  Base api.
+ *
  * @author albin
- * @date 1/2/16
+ * @date 1 /2/16
  */
 public abstract class BaseApi implements Callback<BaseResponseBean> {
+    /**
+     * Instantiates a new Base api.
+     */
     public BaseApi() {
     }
 
+    /**
+     * Gets api listener.
+     *
+     * @return the api listener
+     */
     public abstract BaseAPIListener getApiListener();
 
     @Override
@@ -44,9 +54,22 @@ public abstract class BaseApi implements Callback<BaseResponseBean> {
         }
     }
 
+    /**
+     * The interface Base api listener.
+     */
     public interface BaseAPIListener {
+        /**
+         * Request completed.
+         *
+         * @param response the response
+         */
         void requestCompleted(BaseResponseBean response);
 
+        /**
+         * Request failed.
+         *
+         * @param error the error
+         */
         void requestFailed(RetrofitError error);
     }
 }

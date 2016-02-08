@@ -30,7 +30,7 @@
         android:background="@color/details"
         android:orientation="vertical">
 
-        <me.albinmathew.celluloid.ui.widget.AspectLockedImageView
+        <me.albinmathew.celluloid.ui.widget.CAImageView
             android:id="@+id/movie_item_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

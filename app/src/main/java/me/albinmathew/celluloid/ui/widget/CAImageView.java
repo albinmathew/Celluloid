@@ -24,20 +24,34 @@ import android.widget.ImageView;
 
 import me.albinmathew.celluloid.R;
 
-public class AspectLockedImageView extends ImageView {
+/**
+ * The  Aspect Ratio adjusted image view.
+ */
+public class CAImageView extends ImageView {
 
     private float aspectRatio = 0;
     private AspectRatioSource aspectRatioSource = null;
 
-    public AspectLockedImageView(Context context) {
+    /**
+     * Instantiates a new CAimage view.
+     *
+     * @param context the context
+     */
+    public CAImageView(Context context) {
         super(context);
     }
 
-    public AspectLockedImageView(Context context, AttributeSet attrs) {
+    /**
+     * Instantiates a new Ca image view.
+     *
+     * @param context the context
+     * @param attrs   the attrs
+     */
+    public CAImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AspectLockedImageView);
-        aspectRatio = a.getFloat(R.styleable.AspectLockedImageView_imageAspectRatio, 0);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CAImageView);
+        aspectRatio = a.getFloat(R.styleable.CAImageView_imageAspectRatio, 0);
         a.recycle();
     }
 
@@ -87,10 +101,20 @@ public class AspectLockedImageView extends ImageView {
         }
     }
 
+    /**
+     * Sets aspect ratio source.
+     *
+     * @param v the v
+     */
     public void setAspectRatioSource(View v) {
         this.aspectRatioSource = new ViewAspectRatioSource(v);
     }
 
+    /**
+     * Sets aspect ratio source.
+     *
+     * @param aspectRatioSource the aspect ratio source
+     */
     public void setAspectRatioSource(AspectRatioSource aspectRatioSource) {
         this.aspectRatioSource = aspectRatioSource;
     }
@@ -98,6 +122,11 @@ public class AspectLockedImageView extends ImageView {
     // from com.android.camera.PreviewFrameLayout, with slight
     // modifications
 
+    /**
+     * Sets aspect ratio.
+     *
+     * @param aspectRatio the aspect ratio
+     */
     public void setAspectRatio(float aspectRatio) {
         if (aspectRatio <= 0.0) {
             throw new IllegalArgumentException(
@@ -110,9 +139,22 @@ public class AspectLockedImageView extends ImageView {
         }
     }
 
+    /**
+     * The interface Aspect ratio source.
+     */
     public interface AspectRatioSource {
+        /**
+         * Gets width.
+         *
+         * @return the width
+         */
         int getWidth();
 
+        /**
+         * Gets height.
+         *
+         * @return the height
+         */
         int getHeight();
     }
 
@@ -120,6 +162,11 @@ public class AspectLockedImageView extends ImageView {
             AspectRatioSource {
         private View v = null;
 
+        /**
+         * Instantiates a new View aspect ratio source.
+         *
+         * @param v the v
+         */
         ViewAspectRatioSource(View v) {
             this.v = v;
         }

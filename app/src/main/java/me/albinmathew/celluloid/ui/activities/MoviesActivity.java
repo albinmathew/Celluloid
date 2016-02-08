@@ -16,7 +16,6 @@
 
 package me.albinmathew.celluloid.ui.activities;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -42,16 +41,17 @@ import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.listener.ControlLayerListener;
 import me.albinmathew.celluloid.listener.HidingScrollListener;
-import me.albinmathew.celluloid.listener.RecyclerViewScrollListener;
+import me.albinmathew.celluloid.listener.OnScrollListener;
 import me.albinmathew.celluloid.listener.SortSelectListener;
 import me.albinmathew.celluloid.ui.fragments.SortDialogFragment;
-import me.albinmathew.celluloid.utilities.NetworkUtil;
+import me.albinmathew.celluloid.utilities.CommonUtil;
 
 /**
+ * The Movies activity which displays movies in grid layout.
+ *
  * @author albin
- * @date 2/2/16
+ * @date 2 /2/16
  */
-
 public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener,
         ControlLayerListener,SortSelectListener{
 
@@ -60,11 +60,12 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     private GridLayoutManager mGridLayoutManager;
     private  int mPageCount = 0;
     private SwipeRefreshLayout swipeLayout;
-    private ProgressDialog progressDialog;
     private RelativeLayout mFilterPanelLinearLayout;
     private ControlLayerListener mControlLayerListener = this;
     private String mCurrentSortSelection = CAConstants.POPULARITY;
-    private boolean sorted = false;
+    private static final String STATE_MOVIES = "state_movies";
+    private static final String STATE_SELECTED_POSITION = "state_selected_position";
+    private int mSelectedPosition = -1;
 
 
     @Override
@@ -82,68 +83,74 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
 
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.addOnScrollListener(mLoadMoreEndlessScrolling);
+        mSelectedPosition = savedInstanceState != null ? savedInstanceState.getInt(STATE_SELECTED_POSITION, -1) : -1;
 
-        mMoviesAdapter = new MoviesAdapter(this,new ArrayList<MoviesResponseBean>());
+        ArrayList<MoviesResponseBean> restoredMovies = savedInstanceState != null
+                ? savedInstanceState.<MoviesResponseBean>getParcelableArrayList(STATE_MOVIES) : new ArrayList<MoviesResponseBean>();
+        mMoviesAdapter = new MoviesAdapter(this, restoredMovies);
         mRecyclerView.setAdapter(mMoviesAdapter);
+        if (mSelectedPosition != -1){
+            mRecyclerView.scrollToPosition(mSelectedPosition);
+        }
 
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorSchemeResources(android.R.color.holo_red_light,
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_dark);
-
-        if(NetworkUtil.hasInternetAccess(this)){
-            retrieveMovieList(mCurrentSortSelection, getPageCount()+1);
-        }else{
-           showSnackbar();
-        }
+        swipeLayout.setColorSchemeResources(android.R.color.holo_red_light);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                swipeLayout.setRefreshing(true);
+                if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
+                    clearAdapter();
+                    retrieveMovieList(mCurrentSortSelection, 1);
+                } else {
+                    showSnackbar();
+                }
+            }
+        },500);
     }
 
     private void retrieveMovieList(final String sortOrder, final int pageCount) {
         ApiManager.getInstance().fetchMoviesList(new ApiManager.ProgressListener<BaseResponseBean>() {
             @Override
             public void inProgress() {
-                progressDialog =   new ProgressDialog(MoviesActivity.this);
-                progressDialog.setMessage("Please Wait..");
-                progressDialog.show();
+                if(!swipeLayout.isRefreshing()){
+                    swipeLayout.setRefreshing(true);
+                }
             }
 
             @Override
             public void failed(String message) {
-                if(progressDialog.isShowing()){
-                    progressDialog.dismiss();
+                if(swipeLayout.isRefreshing()){
+                    swipeLayout.setRefreshing(false);
                 }
                 showSnackbar();
             }
 
             @Override
             public void completed(BaseResponseBean responseBean) {
-                if(progressDialog.isShowing()){
-                    progressDialog.dismiss();
-                }
                 ArrayList<MoviesResponseBean> moviesArrayList = (ArrayList<MoviesResponseBean>) responseBean.getResults();
                 mPageCount = responseBean.getPage();
-                if(sorted){
-                    mMoviesAdapter.getMoviesList().clear();
-                }
-                sorted = false;
                 mMoviesAdapter.getMoviesList().addAll(moviesArrayList);
                 mMoviesAdapter.notifyDataSetChanged();
-                mRecyclerView.swapAdapter(mMoviesAdapter,false);
+                if(swipeLayout.isRefreshing()){
+                    swipeLayout.setRefreshing(false);
+                }
             }
         },sortOrder,pageCount);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_MOVIES, new ArrayList<MoviesResponseBean>(mMoviesAdapter.getMoviesList()));
+        outState.putInt(STATE_SELECTED_POSITION, mSelectedPosition);
     }
 
-    private RecyclerViewScrollListener mLoadMoreEndlessScrolling = new RecyclerViewScrollListener(mGridLayoutManager) {
+    private OnScrollListener mLoadMoreEndlessScrolling = new OnScrollListener(mGridLayoutManager) {
         @Override
         public void onLoadMore() {
-            if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
+            if(CommonUtil.hasInternetAccess(MoviesActivity.this)){
                 retrieveMovieList(mCurrentSortSelection, getPageCount()+1);
             }else{
                 showSnackbar();
@@ -219,16 +226,22 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
             @Override
             public void run() {
                 swipeLayout.setRefreshing(false);
-                if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
-                    retrieveMovieList(mCurrentSortSelection,1);
-                }else{
+                if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
+                    clearAdapter();
+                    retrieveMovieList(mCurrentSortSelection, 1);
+                } else {
                     showSnackbar();
                 }
             }
-        },1000);
+        }, 500);
 
     }
 
+    /**
+     * On sort click.
+     *
+     * @param view the view
+     */
     public void onSortClick(View view) {
         SortDialogFragment sortDialogFragment = SortDialogFragment.newInstance();
         sortDialogFragment.setSortSelectListener(this);
@@ -236,21 +249,42 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         sortDialogFragment.show(getFragmentManager(), null);
     }
 
+    /**
+     * On filter click.
+     *
+     * @param view the view
+     */
     public void onFilterClick(View view) {
     }
 
     @Override
     public void onSortCategorySelected(String selection) {
         mCurrentSortSelection = selection;
-        if(NetworkUtil.hasInternetAccess(MoviesActivity.this)){
-            sorted = true;
+        if(CommonUtil.hasInternetAccess(MoviesActivity.this)){
+            clearAdapter();
             retrieveMovieList(mCurrentSortSelection, 1);
         }else{
             showSnackbar();
         }
     }
+
+    /**
+     * Clears the adapter
+     */
+    private void clearAdapter() {
+        mPageCount = 0;
+        mMoviesAdapter.getMoviesList().clear();
+        if(mLoadMoreEndlessScrolling!=null){
+            mLoadMoreEndlessScrolling.clearItemCountVariables();
+        }
+    }
+
+    /**
+     * Gets page count.
+     *
+     * @return the page count
+     */
     public int getPageCount() {
         return mPageCount;
     }
-
 }

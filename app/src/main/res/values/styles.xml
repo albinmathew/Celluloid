@@ -49,15 +49,4 @@
         <item name="android:lineSpacingMultiplier">1.1</item>
         <item name="android:lines">1</item>
     </style>
-
-    <style name="FavoriteButton" parent="Widget.AppCompat.Light.ActionButton">
-        <item name="android:layout_height">@dimen/abc_action_button_min_height_material</item>
-        <item name="android:layout_width">@dimen/abc_action_button_min_height_material</item>
-        <item name="android:src">@drawable/selector_favorite_button</item>
-    </style>
-
-    <style name="DialogAnimation">
-        <item name="android:windowEnterAnimation">@anim/dialog_slide_down_from_top</item>
-        <item name="android:windowExitAnimation">@anim/dialog_slide_down_to_bottom</item>
-    </style>
 </resources>

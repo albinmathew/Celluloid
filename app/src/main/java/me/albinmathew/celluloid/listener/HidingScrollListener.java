@@ -19,8 +19,10 @@ package me.albinmathew.celluloid.listener;
 import android.support.v7.widget.RecyclerView;
 
 /**
+ * The type Hiding scroll listener.
+ *
  * @author albin
- * @date 4/2/16
+ * @date 4 /2/16
  */
 public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
     private static final int HIDE_THRESHOLD = 20;
@@ -57,8 +59,14 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
         }
     }
 
+    /**
+     * On hide.
+     */
     public abstract void onHide();
 
+    /**
+     * On show.
+     */
     public abstract void onShow();
 
 }

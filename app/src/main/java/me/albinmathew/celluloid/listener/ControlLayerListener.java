@@ -17,11 +17,19 @@
 package me.albinmathew.celluloid.listener;
 
 /**
+ * The interface Control layer listener.
+ *
  * @author albin
- * @date 4/2/16
+ * @date 4 /2/16
  */
 public interface ControlLayerListener {
+    /**
+     * Show controls.
+     */
     void showControls();
 
+    /**
+     * Hide controls.
+     */
     void hideControls();
 }

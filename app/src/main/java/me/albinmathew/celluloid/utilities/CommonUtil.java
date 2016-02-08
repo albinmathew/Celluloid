@@ -19,13 +19,32 @@ package me.albinmathew.celluloid.utilities;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import me.albinmathew.celluloid.api.response.MoviesResponseBean;
+import me.albinmathew.celluloid.app.CelluloidApp;
 
 /**
+ * The Common util class for Celluloid app.
+ *
  * @author albin
- * @date 3/2/16
+ * @date 3 /2/16
  */
-public class NetworkUtil {
+public class CommonUtil {
 
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+    /**
+     * Checks for internet access
+     *
+     * @param context context
+     * @return hasInternet boolean
+     */
     public static boolean hasInternetAccess(Context context) {
         try {
             boolean hasInternet = false;
@@ -50,6 +69,12 @@ public class NetworkUtil {
         }
     }
 
+    /**
+     * Check for wifi internet connectivity
+     *
+     * @param context context
+     * @return hasInternet boolean
+     */
     public static boolean hasWifiInternetAccess(Context context) {
         try {
             boolean hasWifiInternet = false;
@@ -70,6 +95,12 @@ public class NetworkUtil {
         }
     }
 
+    /**
+     * Check for 3g internet connectivity
+     *
+     * @param context context
+     * @return hasInternet boolean
+     */
     public static boolean has3gInternetAccess(Context context) {
         try {
             boolean has3gInternet = false;
@@ -90,4 +121,35 @@ public class NetworkUtil {
         }
     }
 
+    /**
+     * Returns the month and release date of the movie
+     *
+     * @param releaseDate release date in yyyy-MM-dd format
+     * @return month and year
+     */
+    public static String getDisplayReleaseDate(String releaseDate) {
+        if (TextUtils.isEmpty(releaseDate)) return "";
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DATE_FORMAT.parse(releaseDate));
+            return calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH) + " " + calendar.get(Calendar.YEAR);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
+
+    /**
+     * Get genre list string.
+     *
+     * @param movies the movies
+     * @return the genre
+     */
+    public static String getGenreList(MoviesResponseBean movies){
+        String genre = "";
+        for (int id: movies.getGenreId()) {
+            genre += CelluloidApp.getGenreMap().get(id).concat(", ");
+        }
+        genre = genre.replaceAll(" $","").replaceAll(",$", "");
+        return genre;
+    }
 }

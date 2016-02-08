@@ -21,12 +21,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -39,7 +36,11 @@ import java.io.IOException;
 import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import me.albinmathew.celluloid.app.CAConstants;
+import me.albinmathew.celluloid.utilities.CommonUtil;
 
+/**
+ * The Movie details activity which displays detailed descriptions on selected movie .
+ */
 public class MovieDetailsActivity extends AppCompatActivity {
 
     private int mutedColor;
@@ -51,42 +52,48 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView mReleaseDate;
     private TextView mRating;
     private TextView mDescription;
+    private TextView mVotes;
+    private TextView mGenre;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        moviesResponseBean = getIntent().getParcelableExtra(CAConstants.INTENT_EXTRA);
+        initViews();
+        setToolBar();
+        initValues();
+        loadBackdrop();
+    }
+
+    private void initValues() {
+        mTitleView.setText(moviesResponseBean.getOriginalTitle());
+        mReleaseDate.setText(CommonUtil.getDisplayReleaseDate(moviesResponseBean.getReleaseDate()));
+        mRating.setText(getString(R.string.movie_details_rating, moviesResponseBean.getVoteAverage()));
+        mDescription.setText(moviesResponseBean.getOverview());
+        mVotes.setText(getString(R.string.movie_details_votes, moviesResponseBean.getVoteCount()));
+        mGenre.setText(getString(R.string.movie_details_genre,CommonUtil.getGenreList(moviesResponseBean)));
+        Picasso.with(MovieDetailsActivity.this).
+                load(CAConstants.POSTER_BASE_URL+moviesResponseBean.getPosterPath()).into(posterImage);
+    }
+
+    private void setToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        collapsingToolbar.setTitle(moviesResponseBean.getTitle());
+    }
+
+    private void initViews() {
         backdropImage = (ImageView) findViewById(R.id.backdrop);
         posterImage = (ImageView) findViewById(R.id.poster_image);
         mTitleView = (TextView) findViewById(R.id.movie_name);
         mReleaseDate = (TextView) findViewById(R.id.release_date);
         mRating = (TextView) findViewById(R.id.rating);
         mDescription = (TextView) findViewById(R.id.description);
-
-        moviesResponseBean = getIntent().getParcelableExtra(CAConstants.INTENT_EXTRA);
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        collapsingToolbar.setTitle(moviesResponseBean.getTitle());
-        Picasso.with(MovieDetailsActivity.this).
-                load(CAConstants.POSTER_BASE_URL+moviesResponseBean.getPosterPath()).into(posterImage);
-        mTitleView.setText(moviesResponseBean.getOriginalTitle());
-        mReleaseDate.setText(moviesResponseBean.getReleaseDate());
-        mRating.setText(String.valueOf(moviesResponseBean.getVoteAverage()+"/10"));
-        mDescription.setText(moviesResponseBean.getOverview());
-
-        loadBackdrop();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
+        mVotes = (TextView) findViewById(R.id.votes);
+        mGenre = (TextView) findViewById(R.id.genres);
     }
 
     @Override
@@ -94,7 +101,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-
+    /**
+     * Loads the backdrop image
+     */
     private void loadBackdrop() {
 
         Picasso.with(this).load(CAConstants.BACKDROP_BASE_URL+moviesResponseBean.getBackdropPath()).into(backdropImage);

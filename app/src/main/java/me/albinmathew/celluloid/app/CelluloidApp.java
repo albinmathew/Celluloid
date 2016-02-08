@@ -18,21 +18,52 @@ package me.albinmathew.celluloid.app;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import me.albinmathew.celluloid.api.http.RestClient;
+import me.albinmathew.celluloid.models.Genre;
+import me.albinmathew.celluloid.models.GenreList;
 
 /**
+ * The type Celluloid app.
+ *
  * @author albin
- * @date 1/2/16
+ * @date 1 /2/16
  */
 public class CelluloidApp extends Application {
     private static CelluloidApp sCelluloidApp;
     private static RestClient sRestClient;
+    private static HashMap<Integer, String> genreMap =new HashMap<>();
 
+    /**
+     * Gets rest client.
+     *
+     * @return the rest client
+     */
     public static RestClient getRestClient() {
         return sRestClient;
     }
 
-    public synchronized static CelluloidApp getCelluloidApp() {
+    /**
+     * Gets genre map.
+     *
+     * @return the genre map
+     */
+    public static HashMap<Integer, String> getGenreMap() {
+        return genreMap;
+    }
+
+    /**
+     * Gets celluloid app.
+     *
+     * @return the celluloid app
+     */
+    public synchronized static CelluloidApp getInstance() {
         return sCelluloidApp;
     }
 
@@ -41,5 +72,32 @@ public class CelluloidApp extends Application {
         super.onCreate();
         sRestClient = new RestClient();
         sCelluloidApp = this;
+        Gson gson = new Gson();
+        GenreList genreResponse = gson.fromJson(loadJSONFromAsset(), GenreList.class);
+        ArrayList<Genre> genreArrayList = (ArrayList<Genre>) genreResponse.getGenres();
+        for (Genre genre : genreArrayList) {
+            genreMap.put(genre.getId(), genre.getName());
+        }
+    }
+
+    /**
+     * Load json from asset string.
+     *
+     * @return the string
+     */
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = this.getAssets().open("genre.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 }

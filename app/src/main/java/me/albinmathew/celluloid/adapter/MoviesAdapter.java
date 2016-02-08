@@ -32,18 +32,26 @@ import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.ui.activities.MovieDetailsActivity;
-import me.albinmathew.celluloid.ui.widget.AspectLockedImageView;
+import me.albinmathew.celluloid.ui.widget.CAImageView;
+import me.albinmathew.celluloid.utilities.CommonUtil;
 
 /**
+ * The Movies adapter to display list of movies.
+ *
  * @author albin
- * @date 28/1/16
+ * @date 28 /1/16
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridViewHolder> {
 
     private List<MoviesResponseBean> mMoviesList;
-
     private Context mContext;
 
+    /**
+     * Instantiates a new Movies adapter.
+     *
+     * @param context    the context
+     * @param moviesList the movies list
+     */
     public MoviesAdapter(Context context, List<MoviesResponseBean> moviesList) {
         this.mMoviesList = moviesList;
         this.mContext = context;
@@ -63,40 +71,58 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
     @Override
     public void onBindViewHolder(MovieGridViewHolder holder, int position) {
         final MoviesResponseBean movies = mMoviesList.get(position);
-        holder.mMovieId.setText(String.valueOf(movies.getId()));
+        holder.mMovieId.setText(CommonUtil.getGenreList(movies));
         holder.mMovieName.setText(movies.getTitle());
-        Picasso.with(mContext).load(CAConstants.POSTER_BASE_URL+movies.getPosterPath()).into(holder.mImageView);
+        Picasso.with(mContext).load(CAConstants.POSTER_BASE_URL + movies.getPosterPath()).into(holder.mImageView);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
                 Intent intent = new Intent(context, MovieDetailsActivity.class);
-                intent.putExtra(CAConstants.INTENT_EXTRA,movies);
+                intent.putExtra(CAConstants.INTENT_EXTRA, movies);
                 context.startActivity(intent);
             }
         });
     }
 
+    /**
+     * Gets movies list.
+     *
+     * @return the movies list
+     */
     public List<MoviesResponseBean> getMoviesList() {
         return mMoviesList;
     }
 
+    /**
+     * Sets movies list.
+     *
+     * @param mMoviesList the m movies list
+     */
     public void setMoviesList(List<MoviesResponseBean> mMoviesList) {
         this.mMoviesList = mMoviesList;
     }
 
+    /**
+     * The type Movie grid view holder.
+     */
     public class MovieGridViewHolder extends RecyclerView.ViewHolder {
         private TextView mMovieId;
         private TextView mMovieName;
-        private AspectLockedImageView mImageView;
+        private CAImageView mImageView;
         private View mView;
 
+        /**
+         * Instantiates a new Movie grid view holder.
+         *
+         * @param itemView the item view
+         */
         public MovieGridViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             mMovieId = (TextView) itemView.findViewById(R.id.movie_item_genres);
             mMovieName = (TextView) itemView.findViewById(R.id.movie_item_title);
-            mImageView = (AspectLockedImageView) itemView.findViewById(R.id.movie_item_image);
+            mImageView = (CAImageView) itemView.findViewById(R.id.movie_item_image);
         }
     }
 }

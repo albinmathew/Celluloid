@@ -20,5 +20,5 @@ package me.albinmathew.celluloid.ui.fragments;
  * @author albin
  * @date 5/2/16
  */
-public class FilterDaialogFragment {
+public class FilterDialogFragment {
 }

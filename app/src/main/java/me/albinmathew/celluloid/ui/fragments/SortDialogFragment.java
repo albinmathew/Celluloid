@@ -31,8 +31,10 @@ import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.listener.SortSelectListener;
 
 /**
+ * The Sort dialog fragment for sorting popular and most rated movies.
+ *
  * @author albin
- * @date 5/2/16
+ * @date 5 /2/16
  */
 public class SortDialogFragment extends DialogFragment {
 
@@ -42,9 +44,17 @@ public class SortDialogFragment extends DialogFragment {
     private SortSelectListener mSortSelectListener;
     private String mCurrentSortOrder;
 
+    /**
+     * Instantiates a new Sort dialog fragment.
+     */
     public SortDialogFragment() {
     }
 
+    /**
+     * New instance sort dialog fragment.
+     *
+     * @return the sort dialog fragment
+     */
     public static SortDialogFragment newInstance() {
         return new SortDialogFragment();
     }
@@ -68,6 +78,9 @@ public class SortDialogFragment extends DialogFragment {
         return mDialog;
     }
 
+    /**
+     * Click listeners
+     */
     private void onClickListeners() {
         mButtonPopularity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,14 +123,29 @@ public class SortDialogFragment extends DialogFragment {
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Sets sort select listener.
+     *
+     * @param mSortSelectListener the m sort select listener
+     */
     public void setSortSelectListener(SortSelectListener mSortSelectListener) {
         this.mSortSelectListener = mSortSelectListener;
     }
 
+    /**
+     * Gets current sort order.
+     *
+     * @return the current sort order
+     */
     public String getCurrentSortOrder() {
         return mCurrentSortOrder;
     }
 
+    /**
+     * Sets current sort order.
+     *
+     * @param mCurrentSortOrder the m current sort order
+     */
     public void setCurrentSortOrder(String mCurrentSortOrder) {
         this.mCurrentSortOrder = mCurrentSortOrder;
     }

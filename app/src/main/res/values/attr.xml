@@ -25,7 +25,7 @@
         <attr name="aspectRatio" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="AspectLockedImageView">
+    <declare-styleable name="CAImageView">
         <attr name="imageAspectRatio" format="dimension"  />
     </declare-styleable>
 

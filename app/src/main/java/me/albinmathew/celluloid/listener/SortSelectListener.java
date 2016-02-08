@@ -17,9 +17,16 @@
 package me.albinmathew.celluloid.listener;
 
 /**
+ * The interface Sort select listener.
+ *
  * @author albin
- * @date 5/2/16
+ * @date 5 /2/16
  */
 public interface SortSelectListener {
+    /**
+     * On sort category selected.
+     *
+     * @param selection the selection
+     */
     void onSortCategorySelected(String selection);
 }
