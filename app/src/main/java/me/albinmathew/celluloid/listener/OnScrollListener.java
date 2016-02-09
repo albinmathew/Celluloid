@@ -27,9 +27,8 @@ import android.support.v7.widget.RecyclerView;
  */
 public abstract class OnScrollListener extends RecyclerView.OnScrollListener {
     private int mFirstVisibleItem, mVisibleItemCount, mTotalItemCount;
-    private int mPreviousTotal = 0; // The total number of items in the dataset after the last load
+    private int mPreviousTotal = 0; // The total number of items in the data set after the last load
     private boolean mIsLoading = true; // True if we are still waiting for the last set of data to load.
-    private int mVisibleThreshold = 4; // The minimum amount of items to have below your current scroll position before loading more.
 
     private GridLayoutManager mGridLayoutManager;
 
@@ -66,6 +65,7 @@ public abstract class OnScrollListener extends RecyclerView.OnScrollListener {
                 mPreviousTotal = mTotalItemCount;
             }
         }
+        int mVisibleThreshold = 4;
         if (!mIsLoading && (mTotalItemCount - mVisibleItemCount)
                 <= (mFirstVisibleItem + mVisibleThreshold)) {
 

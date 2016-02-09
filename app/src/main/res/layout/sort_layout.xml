@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FILTER"
+            android:text="@string/text_filter"
             android:id="@+id/textView2" />
     </LinearLayout>
     <View
@@ -72,7 +72,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SORT"
+            android:text="@string/text_sort"
             android:id="@+id/textView" />
     </LinearLayout>
 </RelativeLayout>

@@ -44,7 +44,7 @@ import me.albinmathew.celluloid.utilities.CommonUtil;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridViewHolder> {
 
     private List<MoviesResponseBean> mMoviesList;
-    private Context mContext;
+    private final Context mContext;
 
     /**
      * Instantiates a new Movies adapter.
@@ -107,10 +107,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
      * The type Movie grid view holder.
      */
     public class MovieGridViewHolder extends RecyclerView.ViewHolder {
-        private TextView mMovieId;
-        private TextView mMovieName;
-        private CAImageView mImageView;
-        private View mView;
+        private final TextView mMovieId;
+        private final TextView mMovieName;
+        private final CAImageView mImageView;
+        private final View mView;
 
         /**
          * Instantiates a new Movie grid view holder.

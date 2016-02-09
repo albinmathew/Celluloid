@@ -191,7 +191,7 @@ public class MoviesResponseBean extends BaseResponseBean implements Parcelable {
     public MoviesResponseBean() {
     }
 
-    protected MoviesResponseBean(Parcel in) {
+    private MoviesResponseBean(Parcel in) {
         super(in);
         this.posterPath = in.readString();
         this.adult = in.readByte() != 0;

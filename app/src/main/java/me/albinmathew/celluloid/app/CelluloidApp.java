@@ -38,7 +38,7 @@ import me.albinmathew.celluloid.models.GenreList;
 public class CelluloidApp extends Application {
     private static CelluloidApp sCelluloidApp;
     private static RestClient sRestClient;
-    private static HashMap<Integer, String> genreMap =new HashMap<>();
+    private static final HashMap<Integer, String> genreMap =new HashMap<>();
 
     /**
      * Gets rest client.
@@ -85,8 +85,8 @@ public class CelluloidApp extends Application {
      *
      * @return the string
      */
-    public String loadJSONFromAsset() {
-        String json = null;
+    private String loadJSONFromAsset() {
+        String json;
         try {
             InputStream is = this.getAssets().open("genre.json");
             int size = is.available();

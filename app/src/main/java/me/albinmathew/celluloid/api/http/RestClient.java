@@ -32,7 +32,7 @@ import retrofit.converter.GsonConverter;
  */
 public class RestClient {
 
-    private MovieDbService movieDbService;
+    private final MovieDbService movieDbService;
 
 
     /**

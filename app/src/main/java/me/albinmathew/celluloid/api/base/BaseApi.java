@@ -30,7 +30,7 @@ public abstract class BaseApi implements Callback<BaseResponseBean> {
     /**
      * Instantiates a new Base api.
      */
-    public BaseApi() {
+    protected BaseApi() {
     }
 
     /**
@@ -38,7 +38,7 @@ public abstract class BaseApi implements Callback<BaseResponseBean> {
      *
      * @return the api listener
      */
-    public abstract BaseAPIListener getApiListener();
+    protected abstract BaseAPIListener getApiListener();
 
     @Override
     public void success(BaseResponseBean responseBean, Response response) {

@@ -62,11 +62,6 @@ public class SortDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mDialog = new Dialog(getActivity());
         mDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -151,7 +146,7 @@ public class SortDialogFragment extends DialogFragment {
      *
      * @return the current sort order
      */
-    public String getCurrentSortOrder() {
+    private String getCurrentSortOrder() {
         return mCurrentSortOrder;
     }
 

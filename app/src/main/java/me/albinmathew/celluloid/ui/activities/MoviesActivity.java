@@ -63,7 +63,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     private  int mPageCount = 0;
     private SwipeRefreshLayout swipeLayout;
     private RelativeLayout mFilterPanelLinearLayout;
-    private ControlLayerListener mControlLayerListener = this;
+    private final ControlLayerListener mControlLayerListener = this;
     private String mCurrentSortSelection = CAConstants.POPULARITY;
     private static final String STATE_MOVIES = "state_movies";
     private static final String STATE_SELECTED_POSITION = "state_selected_position";
@@ -166,7 +166,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         outState.putString(STATE_CURRENT_SORT_SELECTION, mCurrentSortSelection);
     }
 
-    private OnScrollListener mLoadMoreEndlessScrolling = new OnScrollListener(mGridLayoutManager) {
+    private final OnScrollListener mLoadMoreEndlessScrolling = new OnScrollListener(mGridLayoutManager) {
         @Override
         public void onLoadMore() {
             if(CommonUtil.hasInternetAccess(MoviesActivity.this)){
@@ -304,7 +304,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
      *
      * @return the page count
      */
-    public int getPageCount() {
+    private int getPageCount() {
         return mPageCount;
     }
 }

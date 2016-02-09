@@ -20,7 +20,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="text_size_medium">14sp</dimen>
-    <dimen name="item_load_more_size">48dp</dimen>
 
     <!-- Browse Movies -->
     <item name="movie_item_image_aspect_ratio" format="float" type="dimen">.675</item>

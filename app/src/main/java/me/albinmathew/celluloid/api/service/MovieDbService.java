@@ -31,15 +31,14 @@ public interface MovieDbService {
 
     /**
      * Gets movies list.
-     *
-     * @param sort_type the sort type
+     *  @param sort_type the sort type
      * @param api_key   the api key
      * @param page      the page
      * @param callback  the callback
      */
     @GET("/3/discover/movie")
     void getMoviesList(@Query("sort_by") String sort_type,
-                       @Query("api_key") String api_key, @Query("include_adult") boolean includeAdult,@Query("page") int page, Callback<BaseResponseBean> callback);
+                       @Query("api_key") String api_key, @Query("page") int page, Callback<BaseResponseBean> callback);
 
     /**
      * Gets genre list.

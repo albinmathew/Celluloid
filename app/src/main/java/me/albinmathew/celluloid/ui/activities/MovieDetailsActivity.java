@@ -96,11 +96,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mGenre = (TextView) findViewById(R.id.genres);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
     /**
      * Loads the backdrop image
      */

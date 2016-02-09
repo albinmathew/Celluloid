@@ -1,5 +1,5 @@
 /*
- * Copyright 2015.  Emin Yahyayev
+ * Copyright 2016.  Albin Mathew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class CAImageView extends ImageView {
     private AspectRatioSource aspectRatioSource = null;
 
     /**
-     * Instantiates a new CAimage view.
+     * Instantiates a new CA Image view.
      *
      * @param context the context
      */

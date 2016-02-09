@@ -93,7 +93,7 @@ public class Genre implements Parcelable {
      *
      * @param in the in
      */
-    protected Genre(Parcel in) {
+    private Genre(Parcel in) {
         this.id = in.readInt();
         this.name = in.readString();
     }

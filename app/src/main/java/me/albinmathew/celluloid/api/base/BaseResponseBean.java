@@ -83,7 +83,7 @@ public class BaseResponseBean implements Parcelable {
         dest.writeTypedList(results);
     }
 
-    public BaseResponseBean() {
+    protected BaseResponseBean() {
     }
 
     protected BaseResponseBean(Parcel in) {
