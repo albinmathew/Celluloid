@@ -21,7 +21,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
@@ -39,6 +38,38 @@ public class BaseResponseBean implements Parcelable {
     private int totalPages;
     private List<MoviesResponseBean> results;
 
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getTotalResults() {
+        return totalResults;
+    }
+
+    public void setTotalResults(int totalResults) {
+        this.totalResults = totalResults;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public List<MoviesResponseBean> getResults() {
+        return results;
+    }
+
+    public void setResults(List<MoviesResponseBean> results) {
+        this.results = results;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -49,18 +80,26 @@ public class BaseResponseBean implements Parcelable {
         dest.writeInt(this.page);
         dest.writeInt(this.totalResults);
         dest.writeInt(this.totalPages);
-        dest.writeList(this.results);
+        dest.writeTypedList(results);
     }
 
-    public BaseResponseBean() {
+    protected BaseResponseBean() {
     }
 
     protected BaseResponseBean(Parcel in) {
         this.page = in.readInt();
         this.totalResults = in.readInt();
         this.totalPages = in.readInt();
-        this.results = new ArrayList<MoviesResponseBean>();
-        in.readList(this.results, List.class.getClassLoader());
+        this.results = in.createTypedArrayList(MoviesResponseBean.CREATOR);
     }
 
+    public static final Parcelable.Creator<BaseResponseBean> CREATOR = new Parcelable.Creator<BaseResponseBean>() {
+        public BaseResponseBean createFromParcel(Parcel source) {
+            return new BaseResponseBean(source);
+        }
+
+        public BaseResponseBean[] newArray(int size) {
+            return new BaseResponseBean[size];
+        }
+    };
 }

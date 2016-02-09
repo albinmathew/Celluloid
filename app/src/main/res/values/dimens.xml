@@ -15,8 +15,16 @@
   -->
 
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">5dp</dimen>
+    <dimen name="activity_vertical_margin">5dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
+
+    <!-- Browse Movies -->
+    <item name="movie_item_image_aspect_ratio" format="float" type="dimen">.675</item>
+    <!-- Movie Details -->
+    <item name="movie_details_cover_aspect_ratio" format="float" type="dimen">1.77</item>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

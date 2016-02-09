@@ -25,15 +25,19 @@ import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
 /**
+ * The Rest client.
+ *
  * @author albin
- * @date 2/2/16
+ * @date 2 /2/16
  */
-
 public class RestClient {
 
-    private MovieDbService movieDbService;
+    private final MovieDbService movieDbService;
 
 
+    /**
+     * Instantiates a new Rest client.
+     */
     public RestClient() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapterFactory(new ItemTypeAdapterFactory())
@@ -47,6 +51,11 @@ public class RestClient {
         movieDbService = parseRestAdapter.create(MovieDbService.class);
     }
 
+    /**
+     * Gets movie db service.
+     *
+     * @return the movie db service
+     */
     public MovieDbService getMovieDbService() {
         return movieDbService;
     }

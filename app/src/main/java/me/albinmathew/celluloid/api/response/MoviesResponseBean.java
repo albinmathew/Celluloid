@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.api.response;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -26,7 +27,7 @@ import me.albinmathew.celluloid.api.base.BaseResponseBean;
  * @author albin
  * @date 2/2/16
  */
-public class MoviesResponseBean extends BaseResponseBean {
+public class MoviesResponseBean extends BaseResponseBean implements Parcelable {
 
     @SerializedName("poster_path")
     private String posterPath;
@@ -34,7 +35,7 @@ public class MoviesResponseBean extends BaseResponseBean {
     private String overview;
     @SerializedName("release_date")
     private String releaseDate;
-    private int id;
+    private long id;
     @SerializedName("original_title")
     private String originalTitle;
     @SerializedName("original_language")
@@ -42,12 +43,14 @@ public class MoviesResponseBean extends BaseResponseBean {
     private String title;
     @SerializedName("backdrop_path")
     private String backdropPath;
-    private int popularity;
+    private double popularity;
     @SerializedName("vote_count")
-    private int voteCount;
+    private long voteCount;
     private boolean video;
     @SerializedName("vote_average")
-    private int voteAverage;
+    private double voteAverage;
+    @SerializedName("genre_ids")
+    private int[] genreId;
 
     public String getPosterPath() {
         return posterPath;
@@ -81,7 +84,7 @@ public class MoviesResponseBean extends BaseResponseBean {
         this.releaseDate = releaseDate;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -121,7 +124,7 @@ public class MoviesResponseBean extends BaseResponseBean {
         this.backdropPath = backdropPath;
     }
 
-    public int getPopularity() {
+    public double getPopularity() {
         return popularity;
     }
 
@@ -129,7 +132,7 @@ public class MoviesResponseBean extends BaseResponseBean {
         this.popularity = popularity;
     }
 
-    public int getVoteCount() {
+    public long getVoteCount() {
         return voteCount;
     }
 
@@ -145,12 +148,20 @@ public class MoviesResponseBean extends BaseResponseBean {
         this.video = video;
     }
 
-    public int getVoteAverage() {
+    public double getVoteAverage() {
         return voteAverage;
     }
 
     public void setVoteAverage(int voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+    public int[] getGenreId() {
+        return genreId;
+    }
+
+    public void setGenreId(int[] genreId) {
+        this.genreId = genreId;
     }
 
     @Override
@@ -165,35 +176,37 @@ public class MoviesResponseBean extends BaseResponseBean {
         dest.writeByte(adult ? (byte) 1 : (byte) 0);
         dest.writeString(this.overview);
         dest.writeString(this.releaseDate);
-        dest.writeInt(this.id);
+        dest.writeLong(this.id);
         dest.writeString(this.originalTitle);
         dest.writeString(this.originalLanguage);
         dest.writeString(this.title);
         dest.writeString(this.backdropPath);
-        dest.writeInt(this.popularity);
-        dest.writeInt(this.voteCount);
+        dest.writeDouble(this.popularity);
+        dest.writeLong(this.voteCount);
         dest.writeByte(video ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.voteAverage);
+        dest.writeDouble(this.voteAverage);
+        dest.writeIntArray(this.genreId);
     }
 
     public MoviesResponseBean() {
     }
 
-    protected MoviesResponseBean(Parcel in) {
+    private MoviesResponseBean(Parcel in) {
         super(in);
         this.posterPath = in.readString();
         this.adult = in.readByte() != 0;
         this.overview = in.readString();
         this.releaseDate = in.readString();
-        this.id = in.readInt();
+        this.id = in.readLong();
         this.originalTitle = in.readString();
         this.originalLanguage = in.readString();
         this.title = in.readString();
         this.backdropPath = in.readString();
-        this.popularity = in.readInt();
-        this.voteCount = in.readInt();
+        this.popularity = in.readDouble();
+        this.voteCount = in.readLong();
         this.video = in.readByte() != 0;
-        this.voteAverage = in.readInt();
+        this.voteAverage = in.readDouble();
+        this.genreId = in.createIntArray();
     }
 
     public static final Creator<MoviesResponseBean> CREATOR = new Creator<MoviesResponseBean>() {

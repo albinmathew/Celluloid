@@ -21,21 +21,36 @@ import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.app.CelluloidApp;
 
 /**
+ * The type Movies api.
+ *
  * @author albin
- * @date 2/2/16
+ * @date 2 /2/16
  */
-public class MoviesApi extends BaseApi  {
+public class MoviesApi extends BaseApi {
 
     private BaseAPIListener otBaseApiListener = null;
 
+    /**
+     * Instantiates a new Movies api.
+     */
     public MoviesApi() {
     }
 
-    public void  fetchMoviesList(BaseAPIListener apiListener,String sortOrder, int pageCount){
+    /**
+     * Fetch movies list.
+     *
+     * @param apiListener the api listener
+     * @param sortOrder   the sort order
+     * @param pageCount   the page count
+     */
+    public void fetchMoviesList(BaseAPIListener apiListener, String sortOrder, int pageCount) {
         otBaseApiListener = apiListener;
-        CelluloidApp.getRestClient().getMovieDbService().getMoviesList(sortOrder, CAConstants.API_KEY,pageCount,this);
+        CelluloidApp.getRestClient().getMovieDbService().getMoviesList(sortOrder, CAConstants.API_KEY, pageCount, this);
     }
 
+    /**
+     * Clear listener.
+     */
     public void clearListener() {
         this.otBaseApiListener = null;
     }

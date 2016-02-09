@@ -29,11 +29,12 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 
 /**
+ * The  Item type adapter factory.
+ *
  * @author albin
- * @date 2/2/16
+ * @date 2 /2/16
  */
-
-public class ItemTypeAdapterFactory implements TypeAdapterFactory {
+class ItemTypeAdapterFactory implements TypeAdapterFactory {
 
     @NonNull
     public <T> TypeAdapter<T> create(@NonNull Gson gson, final TypeToken<T> type) {

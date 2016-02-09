@@ -20,12 +20,13 @@ import android.support.annotation.NonNull;
 
 import me.albinmathew.celluloid.api.base.BaseApi;
 import me.albinmathew.celluloid.api.base.BaseResponseBean;
-import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import retrofit.RetrofitError;
 
 /**
+ * The Api manager for all APIs.
+ *
  * @author albin
- * @date 2/2/16
+ * @date 2 /2/16
  */
 public class ApiManager {
 
@@ -34,12 +35,18 @@ public class ApiManager {
     private ProgressListener<BaseResponseBean> apiFetchListener;
     private boolean isMoviesAPILoading = false;
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ApiManager getInstance() {
         if (sApiManager == null) {
             sApiManager = new ApiManager();
         }
         return sApiManager;
     }
+
     @NonNull
     private MoviesApi getMoviesApi() {
         if (mMoviesApi != null) {
@@ -49,6 +56,13 @@ public class ApiManager {
         return mMoviesApi;
     }
 
+    /**
+     * Fetch movies list.
+     *
+     * @param listener  the listener
+     * @param sortOrder the sort order
+     * @param pageCount the page count
+     */
     public void fetchMoviesList(ProgressListener<BaseResponseBean> listener, String sortOrder, int pageCount) {
 
         apiFetchListener = listener;
@@ -63,11 +77,10 @@ public class ApiManager {
         getMoviesApi().fetchMoviesList(new BaseApi.BaseAPIListener() {
             @Override
             public void requestCompleted(BaseResponseBean response) {
-                MoviesResponseBean responseBean = (MoviesResponseBean) response;
                 isMoviesAPILoading = false;
                 // return data
                 if (apiFetchListener != null) {
-                    apiFetchListener.completed(responseBean);
+                    apiFetchListener.completed(response);
                     apiFetchListener = null;
                 }
             }
@@ -76,7 +89,7 @@ public class ApiManager {
             public void requestFailed(RetrofitError error) {
                 // return error
                 if (apiFetchListener != null) {
-                    apiFetchListener.failed(error.getResponse().getReason());
+                    apiFetchListener.failed(error.getMessage());
                     apiFetchListener = null;
                 }
             }
@@ -84,12 +97,30 @@ public class ApiManager {
         }, sortOrder, pageCount);
     }
 
+    /**
+     * The interface Progress listener.
+     *
+     * @param <T> the type parameter
+     */
     public interface ProgressListener<T> {
 
+        /**
+         * In progress.
+         */
         void inProgress();
 
+        /**
+         * Failed.
+         *
+         * @param message the message
+         */
         void failed(String message);
 
+        /**
+         * Completed.
+         *
+         * @param object the object
+         */
         void completed(T object);
 
     }

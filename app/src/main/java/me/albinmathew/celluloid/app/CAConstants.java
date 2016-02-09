@@ -22,7 +22,11 @@ package me.albinmathew.celluloid.app;
  */
 public class CAConstants {
     public static final String API_BASE_URL = "https://api.themoviedb.org";
-    public static final String POSTER_BASE_URL="http://image.tmdb.org/t/p/w185";
-    public static final String BACKDROP_BASE_URL="http://image.tmdb.org/t/p/w500";
-    public static final String API_KEY = "YOUR_API_KEY";
+    public static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/w185";
+    public static final String BACKDROP_BASE_URL = "http://image.tmdb.org/t/p/w500";
+    public static final String API_KEY = "Your Api Key";
+    public static final String INTENT_EXTRA = "intent_extra";
+    public static final String POPULARITY = "popularity.desc";
+    public static final String VOTE_AVERAGE="vote_average.desc";
+    public static final String VOTE_COUNT="vote_count.desc";
 }

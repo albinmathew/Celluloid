@@ -14,30 +14,11 @@
  * limitations under the License.
  */
 
-package me.albinmathew.celluloid.models;
+package me.albinmathew.celluloid.ui.fragments;
 
 /**
  * @author albin
- * @date 28/1/16
+ * @date 5/2/16
  */
-public class Movies {
-
-    private String name;
-    private int id;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+class FilterDialogFragment {
 }
