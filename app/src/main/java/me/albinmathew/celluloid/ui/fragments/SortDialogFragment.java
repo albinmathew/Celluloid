@@ -43,6 +43,8 @@ public class SortDialogFragment extends DialogFragment {
     private RadioButton mButtonRating;
     private SortSelectListener mSortSelectListener;
     private String mCurrentSortOrder;
+    private static final String STATE_CURRENT_SORT_SELECTION = "state_movies_current_sort";
+    public static final String STATE_SORT_LISTENER  =   "state_sort_listener";
 
     /**
      * Instantiates a new Sort dialog fragment.
@@ -70,12 +72,20 @@ public class SortDialogFragment extends DialogFragment {
         mDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mDialog.setContentView(R.layout.dialog_sort);
-        setUpViews(mDialog);
+        setUpViews(mDialog, savedInstanceState);
         onClickListeners();
         mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         mDialog.setCancelable(false);
+        setRetainInstance(true);
         mDialog.show();
         return mDialog;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+        super.onDestroyView();
     }
 
     /**
@@ -108,9 +118,12 @@ public class SortDialogFragment extends DialogFragment {
         });
     }
 
-    private void setUpViews(Dialog dialog) {
+    private void setUpViews(Dialog dialog, Bundle savedInstanceState) {
         mButtonRating = (RadioButton) dialog.findViewById(R.id.button_sort_mostrated);
         mButtonPopularity = (RadioButton) dialog.findViewById(R.id.button_sort_popularity);
+        if(savedInstanceState!=null){
+            mCurrentSortOrder = savedInstanceState.getString(STATE_CURRENT_SORT_SELECTION);
+        }
         if(getCurrentSortOrder().equals(CAConstants.POPULARITY)){
            mButtonPopularity.toggle();
         }else{
@@ -121,6 +134,7 @@ public class SortDialogFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString(STATE_CURRENT_SORT_SELECTION, mCurrentSortOrder);
     }
 
     /**

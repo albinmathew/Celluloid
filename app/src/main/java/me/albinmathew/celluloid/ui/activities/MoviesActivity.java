@@ -16,6 +16,7 @@
 
 package me.albinmathew.celluloid.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -26,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -65,6 +67,9 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     private String mCurrentSortSelection = CAConstants.POPULARITY;
     private static final String STATE_MOVIES = "state_movies";
     private static final String STATE_SELECTED_POSITION = "state_selected_position";
+    private static final String STATE_CURRENT_SORT_SELECTION = "state_movies_current_sort";
+    private static final String STATE_PAGE_COUNT = "state_movie_page_count";
+
     private int mSelectedPosition = -1;
 
 
@@ -74,40 +79,52 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         setContentView(R.layout.activity_movies);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mFilterPanelLinearLayout = (RelativeLayout) findViewById(R.id.sort_layout);
-
-        mGridLayoutManager =  new GridLayoutManager(this,2);
-        mLoadMoreEndlessScrolling.setGridLayoutManager(mGridLayoutManager);
-
-        mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mRecyclerView.addOnScrollListener(mLoadMoreEndlessScrolling);
-        mSelectedPosition = savedInstanceState != null ? savedInstanceState.getInt(STATE_SELECTED_POSITION, -1) : -1;
-
+        initViews();
+        if(savedInstanceState!=null){
+            mSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION, -1);
+            mPageCount = savedInstanceState.getInt(STATE_PAGE_COUNT, 1);
+            mCurrentSortSelection = savedInstanceState.getString(STATE_CURRENT_SORT_SELECTION);
+        }
         ArrayList<MoviesResponseBean> restoredMovies = savedInstanceState != null
                 ? savedInstanceState.<MoviesResponseBean>getParcelableArrayList(STATE_MOVIES) : new ArrayList<MoviesResponseBean>();
         mMoviesAdapter = new MoviesAdapter(this, restoredMovies);
         mRecyclerView.setAdapter(mMoviesAdapter);
-        if (mSelectedPosition != -1){
-            mRecyclerView.scrollToPosition(mSelectedPosition);
+        if(savedInstanceState==null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    swipeLayout.setRefreshing(true);
+                    if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
+                        clearAdapter();
+                        retrieveMovieList(mCurrentSortSelection, 1);
+                    } else {
+                        showSnackbar();
+                    }
+                }
+            }, 500);
         }
+    }
 
+    /**
+     * Initialise views
+     */
+    private void initViews() {
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(android.R.color.holo_red_light);
-        new Handler().postDelayed(new Runnable() {
+        mFilterPanelLinearLayout = (RelativeLayout) findViewById(R.id.sort_layout);
+        mGridLayoutManager =  new GridLayoutManager(this,2);
+        mLoadMoreEndlessScrolling.setGridLayoutManager(mGridLayoutManager);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mRecyclerView.addOnScrollListener(mLoadMoreEndlessScrolling);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void run() {
-                swipeLayout.setRefreshing(true);
-                if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
-                    clearAdapter();
-                    retrieveMovieList(mCurrentSortSelection, 1);
-                } else {
-                    showSnackbar();
-                }
+            public boolean onTouch(View v, MotionEvent event) {
+                return swipeLayout.isRefreshing();
             }
-        },500);
+        });
     }
 
     private void retrieveMovieList(final String sortOrder, final int pageCount) {
@@ -143,8 +160,10 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(STATE_MOVIES, new ArrayList<MoviesResponseBean>(mMoviesAdapter.getMoviesList()));
+        outState.putParcelableArrayList(STATE_MOVIES, new ArrayList<>(mMoviesAdapter.getMoviesList()));
         outState.putInt(STATE_SELECTED_POSITION, mSelectedPosition);
+        outState.putInt(STATE_PAGE_COUNT, mPageCount);
+        outState.putString(STATE_CURRENT_SORT_SELECTION, mCurrentSortSelection);
     }
 
     private OnScrollListener mLoadMoreEndlessScrolling = new OnScrollListener(mGridLayoutManager) {
@@ -214,7 +233,8 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_about) {
+            startActivity(new Intent(this,AboutActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

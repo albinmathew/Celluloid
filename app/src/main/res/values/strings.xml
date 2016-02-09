@@ -34,4 +34,14 @@
         "interact, and exist in space and in relation to each other. Realistic lighting shows "
         "seams, divides space, and indicates moving parts.\n\n"
     </string>
+    <string name="title_activity_about">About</string>
+    <string name="about_text">
+          \n
+          Celluloid \n\n
+        Stage 1 of the Popular Movies project in Android Developer Nanodegree program.\n
+          \nFeatures \n\nWith the app, you can: \nDiscover the most popular, the most rated or the highest rated movies
+          \n \n
+          Developed by Albin Mathew
+          \n
+    </string>
 </resources>
