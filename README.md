@@ -1,6 +1,6 @@
 # Celluloid
 
-Stage 1 of the popular movies project made from scratch for Android Developer Nanodegree program.
+Stage 2 of the popular movies project made from scratch for Android Developer Nanodegree program.
 
 ## Features
 
