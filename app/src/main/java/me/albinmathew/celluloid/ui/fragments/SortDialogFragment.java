@@ -38,13 +38,16 @@ import me.albinmathew.celluloid.listener.SortSelectListener;
  */
 public class SortDialogFragment extends DialogFragment {
 
+    /**
+     * The constant STATE_SORT_LISTENER.
+     */
+    public static final String STATE_SORT_LISTENER = "state_sort_listener";
+    private static final String STATE_CURRENT_SORT_SELECTION = "state_movies_current_sort";
     private Dialog mDialog;
     private RadioButton mButtonPopularity;
     private RadioButton mButtonRating;
     private SortSelectListener mSortSelectListener;
     private String mCurrentSortOrder;
-    private static final String STATE_CURRENT_SORT_SELECTION = "state_movies_current_sort";
-    public static final String STATE_SORT_LISTENER  =   "state_sort_listener";
 
     /**
      * Instantiates a new Sort dialog fragment.
@@ -91,7 +94,7 @@ public class SortDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mSortSelectListener != null) {
-                    if(!getCurrentSortOrder().equals(CAConstants.POPULARITY)){
+                    if (!getCurrentSortOrder().equals(CAConstants.POPULARITY)) {
                         mButtonPopularity.toggle();
                     }
                     mSortSelectListener.onSortCategorySelected(CAConstants.POPULARITY);
@@ -103,7 +106,7 @@ public class SortDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mSortSelectListener != null) {
-                    if(!getCurrentSortOrder().equals(CAConstants.VOTE_AVERAGE)){
+                    if (!getCurrentSortOrder().equals(CAConstants.VOTE_AVERAGE)) {
                         mButtonRating.toggle();
                     }
                     mSortSelectListener.onSortCategorySelected(CAConstants.VOTE_AVERAGE);
@@ -116,12 +119,12 @@ public class SortDialogFragment extends DialogFragment {
     private void setUpViews(Dialog dialog, Bundle savedInstanceState) {
         mButtonRating = (RadioButton) dialog.findViewById(R.id.button_sort_mostrated);
         mButtonPopularity = (RadioButton) dialog.findViewById(R.id.button_sort_popularity);
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             mCurrentSortOrder = savedInstanceState.getString(STATE_CURRENT_SORT_SELECTION);
         }
-        if(getCurrentSortOrder().equals(CAConstants.POPULARITY)){
-           mButtonPopularity.toggle();
-        }else{
+        if (getCurrentSortOrder().equals(CAConstants.POPULARITY)) {
+            mButtonPopularity.toggle();
+        } else {
             mButtonRating.toggle();
         }
     }

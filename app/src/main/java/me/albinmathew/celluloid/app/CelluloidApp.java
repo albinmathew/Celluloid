@@ -36,9 +36,9 @@ import me.albinmathew.celluloid.models.GenreList;
  * @date 1 /2/16
  */
 public class CelluloidApp extends Application {
+    private static final HashMap<Integer, String> genreMap = new HashMap<>();
     private static CelluloidApp sCelluloidApp;
     private static RestClient sRestClient;
-    private static final HashMap<Integer, String> genreMap =new HashMap<>();
 
     /**
      * Gets rest client.

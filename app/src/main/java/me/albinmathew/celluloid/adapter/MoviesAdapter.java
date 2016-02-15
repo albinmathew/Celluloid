@@ -18,6 +18,7 @@ package me.albinmathew.celluloid.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,8 @@ import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.ui.activities.MovieDetailsActivity;
+import me.albinmathew.celluloid.ui.activities.MoviesActivity;
+import me.albinmathew.celluloid.ui.fragments.MovieDetailFragment;
 import me.albinmathew.celluloid.ui.widget.CAImageView;
 import me.albinmathew.celluloid.utilities.CommonUtil;
 
@@ -43,8 +46,8 @@ import me.albinmathew.celluloid.utilities.CommonUtil;
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridViewHolder> {
 
+    private final MoviesActivity mContext;
     private List<MoviesResponseBean> mMoviesList;
-    private final Context mContext;
 
     /**
      * Instantiates a new Movies adapter.
@@ -52,7 +55,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
      * @param context    the context
      * @param moviesList the movies list
      */
-    public MoviesAdapter(Context context, List<MoviesResponseBean> moviesList) {
+    public MoviesAdapter(MoviesActivity context, List<MoviesResponseBean> moviesList) {
         this.mMoviesList = moviesList;
         this.mContext = context;
     }
@@ -69,7 +72,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
     }
 
     @Override
-    public void onBindViewHolder(MovieGridViewHolder holder, int position) {
+    public void onBindViewHolder(final MovieGridViewHolder holder, int position) {
         final MoviesResponseBean movies = mMoviesList.get(position);
         holder.mMovieId.setText(CommonUtil.getGenreList(movies));
         holder.mMovieName.setText(movies.getTitle());
@@ -77,10 +80,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, MovieDetailsActivity.class);
-                intent.putExtra(CAConstants.INTENT_EXTRA, movies);
-                context.startActivity(intent);
+                if (mContext.isTwoPane()) {
+                    Bundle arguments = new Bundle();
+                    arguments.putParcelable(CAConstants.INTENT_EXTRA, movies);
+                    MovieDetailFragment fragment = new MovieDetailFragment();
+                    fragment.setArguments(arguments);
+                    mContext.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.movie_detail_container, fragment)
+                            .commit();
+                } else {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, MovieDetailsActivity.class);
+                    intent.putExtra(CAConstants.INTENT_EXTRA, movies);
+                    context.startActivity(intent);
+                }
             }
         });
     }

@@ -16,6 +16,7 @@
 
 package me.albinmathew.celluloid.ui.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -24,10 +25,10 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -36,78 +37,71 @@ import java.io.IOException;
 import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import me.albinmathew.celluloid.app.CAConstants;
-import me.albinmathew.celluloid.utilities.CommonUtil;
+import me.albinmathew.celluloid.ui.fragments.MovieDetailFragment;
 
 /**
- * The Movie details activity which displays detailed descriptions on selected movie .
+ * An activity representing a single Movie detail screen. This
+ * activity is only used narrow width devices. On tablet-size devices,
+ * item details are presented side-by-side with a list of items
+ * in a {@link MoviesActivity}.
  */
 public class MovieDetailsActivity extends AppCompatActivity {
 
     private int mutedColor;
     private CollapsingToolbarLayout collapsingToolbar;
     private MoviesResponseBean moviesResponseBean;
-    private ImageView backdropImage;
-    private ImageView posterImage;
-    private TextView mTitleView;
-    private TextView mReleaseDate;
-    private TextView mRating;
-    private TextView mDescription;
-    private TextView mVotes;
-    private TextView mGenre;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         moviesResponseBean = getIntent().getParcelableExtra(CAConstants.INTENT_EXTRA);
-        initViews();
         setToolBar();
-        initValues();
+        loadDetailsFragment(savedInstanceState);
         loadBackdrop();
     }
 
-    private void initValues() {
-        mTitleView.setText(moviesResponseBean.getOriginalTitle());
-        mReleaseDate.setText(CommonUtil.getDisplayReleaseDate(moviesResponseBean.getReleaseDate()));
-        mRating.setText(getString(R.string.movie_details_rating, moviesResponseBean.getVoteAverage()));
-        mDescription.setText(moviesResponseBean.getOverview());
-        mVotes.setText(getString(R.string.movie_details_votes, moviesResponseBean.getVoteCount()));
-        mGenre.setText(getString(R.string.movie_details_genre,CommonUtil.getGenreList(moviesResponseBean)));
-        Picasso.with(MovieDetailsActivity.this).
-                load(CAConstants.POSTER_BASE_URL+moviesResponseBean.getPosterPath()).into(posterImage);
+    private void loadDetailsFragment(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(CAConstants.INTENT_EXTRA, getIntent().getParcelableExtra(CAConstants.INTENT_EXTRA));
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container, fragment)
+                    .commit();
+        }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            navigateUpTo(new Intent(this, MoviesActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     private void setToolBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         collapsingToolbar.setTitle(moviesResponseBean.getTitle());
-    }
-
-    private void initViews() {
-        backdropImage = (ImageView) findViewById(R.id.backdrop);
-        posterImage = (ImageView) findViewById(R.id.poster_image);
-        mTitleView = (TextView) findViewById(R.id.movie_name);
-        mReleaseDate = (TextView) findViewById(R.id.release_date);
-        mRating = (TextView) findViewById(R.id.rating);
-        mDescription = (TextView) findViewById(R.id.description);
-        mVotes = (TextView) findViewById(R.id.votes);
-        mGenre = (TextView) findViewById(R.id.genres);
     }
 
     /**
      * Loads the backdrop image
      */
     private void loadBackdrop() {
-
-        Picasso.with(this).load(CAConstants.BACKDROP_BASE_URL+moviesResponseBean.getBackdropPath()).into(backdropImage);
+        ImageView backdropImage = (ImageView) findViewById(R.id.backdrop);
+        Picasso.with(this).load(CAConstants.BACKDROP_BASE_URL + moviesResponseBean.getBackdropPath()).into(backdropImage);
         new AsyncTask<Void, Void, Bitmap>() {
             @Override
             protected Bitmap doInBackground(Void... params) {
                 try {
-                    return Picasso.with(MovieDetailsActivity.this).
-                            load(CAConstants.BACKDROP_BASE_URL+moviesResponseBean.getBackdropPath()).get();
+                    return Picasso.with(MovieDetailsActivity.this).load(CAConstants.BACKDROP_BASE_URL + moviesResponseBean.getBackdropPath()).get();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -117,7 +111,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Bitmap bitmap) {
                 super.onPostExecute(bitmap);
-                if(bitmap!=null){
+                if (bitmap != null) {
                     Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
@@ -127,12 +121,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                 Window window = MovieDetailsActivity.this.getWindow();
                                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                                window.setStatusBarColor(mutedColor-10);
+                                window.setStatusBarColor(mutedColor - 10);
                             }
                         }
                     });
                 }
             }
-        }.execute(null,null,null);
+        }.execute(null, null, null);
     }
 }

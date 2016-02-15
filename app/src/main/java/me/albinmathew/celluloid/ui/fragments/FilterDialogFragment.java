@@ -17,8 +17,10 @@
 package me.albinmathew.celluloid.ui.fragments;
 
 /**
+ * The type Filter dialog fragment.
+ *
  * @author albin
- * @date 5/2/16
+ * @date 5 /2/16
  */
 class FilterDialogFragment {
 }

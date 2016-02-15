@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016. Albin Mathew
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,5 +16,5 @@
 
 <resources>
     <item name="button_sort_popularity" type="id">button_sort_popularity</item>
-  <item name="button_sort_mostrated" type="id">button_sort_whatsnew</item>
+    <item name="button_sort_mostrated" type="id">button_sort_whatsnew</item>
 </resources>

@@ -27,4 +27,5 @@
     <item name="movie_details_cover_aspect_ratio" format="float" type="dimen">1.77</item>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="item_width">400dp</dimen>
 </resources>

@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.utilities;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
@@ -144,12 +145,22 @@ public class CommonUtil {
      * @param movies the movies
      * @return the genre
      */
-    public static String getGenreList(MoviesResponseBean movies){
+    public static String getGenreList(MoviesResponseBean movies) {
         String genre = "";
-        for (int id: movies.getGenreId()) {
+        for (int id : movies.getGenreId()) {
             genre += CelluloidApp.getGenreMap().get(id).concat(", ");
         }
-        genre = genre.replaceAll(" $","").replaceAll(",$", "");
+        genre = genre.replaceAll(" $", "").replaceAll(",$", "");
         return genre;
+    }
+
+    /**
+     * @param context given context
+     * @return true if its a tablet
+     */
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }
