@@ -16,9 +16,12 @@
 
 package me.albinmathew.celluloid.api.service;
 
-import me.albinmathew.celluloid.api.base.BaseResponseBean;
+import me.albinmathew.celluloid.api.base.BaseMovieBean;
+import me.albinmathew.celluloid.api.base.BaseReviewBean;
+import me.albinmathew.celluloid.api.base.BaseVideoBean;
 import retrofit.Callback;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -31,14 +34,17 @@ public interface MovieDbService {
 
     /**
      * Gets movies list.
-     *  @param sort_type the sort type
-     * @param api_key   the api key
-     * @param page      the page
-     * @param callback  the callback
+     *
+     * @param sort_type    the sort type
+     * @param api_key      the api key
+     * @param page         the page
+     * @param includeAdult the include adult
+     * @param callback     the callback
      */
     @GET("/3/discover/movie")
     void getMoviesList(@Query("sort_by") String sort_type,
-                       @Query("api_key") String api_key, @Query("page") int page, Callback<BaseResponseBean> callback);
+                       @Query("api_key") String api_key, @Query("page") int page,@Query("include_adult") boolean includeAdult,
+                       Callback<BaseMovieBean> callback);
 
     /**
      * Gets genre list.
@@ -47,4 +53,26 @@ public interface MovieDbService {
      */
     @GET("/genre/movie/list")
     void getGenreList(@Query("api_key") String api_key);
+
+    /**
+     * Gets videos list.
+     *
+     * @param movieId  the movie id
+     * @param api_key  the api key
+     * @param callback the callback
+     */
+    @GET("/3/movie/{id}/videos")
+    void getVideosList(@Path("id") long movieId,@Query("api_key") String api_key, Callback<BaseVideoBean> callback);
+
+    /**
+     * Gets reviews list.
+     *
+     * @param movieId  the movie id
+     * @param api_key  the api key
+     * @param page     the page
+     * @param callback the callback
+     */
+    @GET("/3/movie/{id}/reviews")
+    void getReviewsList(@Path("id") long movieId,@Query("api_key") String api_key, @Query("page") int page,
+                        Callback<BaseReviewBean> callback);
 }

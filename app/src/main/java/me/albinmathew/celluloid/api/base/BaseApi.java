@@ -16,7 +16,8 @@
 
 package me.albinmathew.celluloid.api.base;
 
-import retrofit.Callback;
+import android.util.Log;
+
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -26,7 +27,7 @@ import retrofit.client.Response;
  * @author albin
  * @date 1 /2/16
  */
-public abstract class BaseApi implements Callback<BaseResponseBean> {
+public abstract class BaseApi  {
     /**
      * Instantiates a new Base api.
      */
@@ -40,15 +41,16 @@ public abstract class BaseApi implements Callback<BaseResponseBean> {
      */
     protected abstract BaseAPIListener getApiListener();
 
-    @Override
-    public void success(BaseResponseBean responseBean, Response response) {
+
+    protected void successResponse(BaseBean responseBean, Response response) {
+        Log.d("SUCCESS_URL",response.getUrl());
         if (getApiListener() != null) {
             getApiListener().requestCompleted(responseBean);
         }
     }
 
-    @Override
-    public void failure(RetrofitError error) {
+    protected void failureResponse(RetrofitError error) {
+        Log.d("ERROR_URL",error.getUrl() + "\n ERROR_REASON : "+error.getResponse().getStatus());
         if (getApiListener() != null) {
             getApiListener().requestFailed(error);
         }
@@ -63,7 +65,7 @@ public abstract class BaseApi implements Callback<BaseResponseBean> {
          *
          * @param response the response
          */
-        void requestCompleted(BaseResponseBean response);
+        void requestCompleted(BaseBean response);
 
         /**
          * Request failed.

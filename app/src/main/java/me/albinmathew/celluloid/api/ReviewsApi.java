@@ -17,7 +17,7 @@
 package me.albinmathew.celluloid.api;
 
 import me.albinmathew.celluloid.api.base.BaseApi;
-import me.albinmathew.celluloid.api.base.BaseMovieBean;
+import me.albinmathew.celluloid.api.base.BaseReviewBean;
 import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.app.CelluloidApp;
 import retrofit.Callback;
@@ -25,31 +25,31 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * The type Movies api.
+ * The type Reviews api.
  *
  * @author albin
- * @date 2 /2/16
+ * @date 16/2/16
  */
-public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
+public class ReviewsApi extends BaseApi implements Callback<BaseReviewBean> {
 
     private BaseAPIListener otBaseApiListener = null;
 
     /**
      * Instantiates a new Movies api.
      */
-    public MoviesApi() {
+    public ReviewsApi() {
     }
 
     /**
      * Fetch movies list.
      *
      * @param apiListener the api listener
-     * @param sortOrder   the sort order
+     * @param movieId     the movie id
      * @param pageCount   the page count
      */
-    public void fetchMoviesList(BaseAPIListener apiListener, String sortOrder, int pageCount) {
+    public void fetchReviewsList(BaseAPIListener apiListener, long movieId, int pageCount) {
         otBaseApiListener = apiListener;
-        CelluloidApp.getRestClient().getMovieDbService().getMoviesList(sortOrder, CAConstants.API_KEY, pageCount,false,this);
+        CelluloidApp.getRestClient().getMovieDbService().getReviewsList(movieId, CAConstants.API_KEY, pageCount, this);
     }
 
     /**
@@ -65,7 +65,7 @@ public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
     }
 
     @Override
-    public void success(BaseMovieBean responseBean, Response response) {
+    public void success(BaseReviewBean responseBean, Response response) {
         successResponse(responseBean,response);
     }
 

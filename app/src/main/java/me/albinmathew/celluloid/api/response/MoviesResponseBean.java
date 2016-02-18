@@ -21,13 +21,13 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import me.albinmathew.celluloid.api.base.BaseResponseBean;
+import me.albinmathew.celluloid.api.base.BaseMovieBean;
 
 /**
  * @author albin
  * @date 2/2/16
  */
-public class MoviesResponseBean extends BaseResponseBean implements Parcelable {
+public class MoviesResponseBean extends BaseMovieBean implements Parcelable {
 
     @SerializedName("poster_path")
     private String posterPath;

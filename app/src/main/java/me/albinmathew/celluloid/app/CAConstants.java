@@ -29,4 +29,7 @@ public class CAConstants {
     public static final String POPULARITY = "popularity.desc";
     public static final String VOTE_AVERAGE = "vote_average.desc";
     public static final String VOTE_COUNT = "vote_count.desc";
+    public static final String MOVIE = "movie";
+    public static final String EMPTY = "";
+    public static final String SITE_YOUTUBE = "YouTube";
 }

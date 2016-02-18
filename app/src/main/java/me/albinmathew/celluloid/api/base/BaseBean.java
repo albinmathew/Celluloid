@@ -21,22 +21,17 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-import me.albinmathew.celluloid.api.response.MoviesResponseBean;
-
 /**
  * @author albin
- * @date 2/2/16
+ * @date 16/2/16
  */
-public class BaseResponseBean implements Parcelable {
+public class BaseBean implements Parcelable {
 
     private int page;
     @SerializedName("total_results")
     private int totalResults;
     @SerializedName("total_pages")
     private int totalPages;
-    private List<MoviesResponseBean> results;
 
     public int getPage() {
         return page;
@@ -62,12 +57,7 @@ public class BaseResponseBean implements Parcelable {
         this.totalPages = totalPages;
     }
 
-    public List<MoviesResponseBean> getResults() {
-        return results;
-    }
-
-    public void setResults(List<MoviesResponseBean> results) {
-        this.results = results;
+    public BaseBean() {
     }
 
     @Override
@@ -80,26 +70,21 @@ public class BaseResponseBean implements Parcelable {
         dest.writeInt(this.page);
         dest.writeInt(this.totalResults);
         dest.writeInt(this.totalPages);
-        dest.writeTypedList(results);
     }
 
-    protected BaseResponseBean() {
-    }
-
-    protected BaseResponseBean(Parcel in) {
+    protected BaseBean(Parcel in) {
         this.page = in.readInt();
         this.totalResults = in.readInt();
         this.totalPages = in.readInt();
-        this.results = in.createTypedArrayList(MoviesResponseBean.CREATOR);
     }
 
-    public static final Parcelable.Creator<BaseResponseBean> CREATOR = new Parcelable.Creator<BaseResponseBean>() {
-        public BaseResponseBean createFromParcel(Parcel source) {
-            return new BaseResponseBean(source);
+    public static final Creator<BaseBean> CREATOR = new Creator<BaseBean>() {
+        public BaseBean createFromParcel(Parcel source) {
+            return new BaseBean(source);
         }
 
-        public BaseResponseBean[] newArray(int size) {
-            return new BaseResponseBean[size];
+        public BaseBean[] newArray(int size) {
+            return new BaseBean[size];
         }
     };
 }

@@ -39,4 +39,7 @@
     <string name="title_movie_detail">Movie Detail</string>
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
+    <string name="overview">Overview</string>
 </resources>

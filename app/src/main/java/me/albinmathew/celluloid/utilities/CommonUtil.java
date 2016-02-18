@@ -28,6 +28,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
+import me.albinmathew.celluloid.api.response.VideoResponseBean;
+import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.app.CelluloidApp;
 
 /**
@@ -155,6 +157,8 @@ public class CommonUtil {
     }
 
     /**
+     * Is tablet boolean.
+     *
      * @param context given context
      * @return true if its a tablet
      */
@@ -163,4 +167,33 @@ public class CommonUtil {
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
+
+    /**
+     * Gets url.
+     *
+     * @param video the video
+     * @return the url
+     */
+    public static String getUrl(VideoResponseBean video) {
+        if (CAConstants.SITE_YOUTUBE.equalsIgnoreCase(video.getSite())) {
+            return String.format("http://www.youtube.com/watch?v=%1$s", video.getVideoId());
+        } else {
+            return CAConstants.EMPTY;
+        }
+    }
+
+    /**
+     * Gets thumbnail url.
+     *
+     * @param video the video
+     * @return the thumbnail url
+     */
+    public static String getThumbnailUrl(VideoResponseBean video) {
+        if (CAConstants.SITE_YOUTUBE.equalsIgnoreCase(video.getSite())) {
+            return String.format("http://img.youtube.com/vi/%1$s/0.jpg", video.getVideoId());
+        } else {
+            return CAConstants.EMPTY;
+        }
+    }
+
 }
