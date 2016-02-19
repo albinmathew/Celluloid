@@ -26,7 +26,7 @@
         android:id="@+id/video_thumb"
         android:layout_width="@dimen/video_width"
         android:layout_height="@dimen/video_height"
-        android:layout_margin="16dp"
+        android:layout_marginLeft="10dp"
         android:contentDescription="@string/app_name" />
 
 </FrameLayout>

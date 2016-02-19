@@ -20,6 +20,9 @@ import android.support.annotation.NonNull;
 
 import me.albinmathew.celluloid.api.base.BaseApi;
 import me.albinmathew.celluloid.api.base.BaseBean;
+import me.albinmathew.celluloid.api.base.BaseMovieBean;
+import me.albinmathew.celluloid.api.base.BaseReviewBean;
+import me.albinmathew.celluloid.api.base.BaseVideoBean;
 import retrofit.RetrofitError;
 
 /**
@@ -36,7 +39,9 @@ public class ApiManager {
     private ReviewsApi mReviewsApi = null;
     private VideosApi mVideosApi = null;
 
-    private ProgressListener<BaseBean> apiFetchListener;
+    private ProgressListener<BaseMovieBean> moviesFetchListener;
+    private ProgressListener<BaseReviewBean> reviewFetchListener;
+    private ProgressListener<BaseVideoBean> videoFetchListener;
 
     private boolean isMoviesAPILoading = false;
     private boolean isReviewsAPILoading = false;
@@ -88,11 +93,11 @@ public class ApiManager {
      * @param sortOrder the sort order
      * @param pageCount the page count
      */
-    public void fetchMoviesList(ProgressListener<BaseBean> listener, String sortOrder, int pageCount) {
+    public void fetchMoviesList(ProgressListener<BaseMovieBean> listener, String sortOrder, int pageCount) {
 
-        apiFetchListener = listener;
-        if (apiFetchListener != null) {
-            apiFetchListener.inProgress();
+        moviesFetchListener = listener;
+        if (moviesFetchListener != null) {
+            moviesFetchListener.inProgress();
         }
         if (isMoviesAPILoading) {
             return;
@@ -104,18 +109,19 @@ public class ApiManager {
             public void requestCompleted(BaseBean response) {
                 isMoviesAPILoading = false;
                 // return data
-                if (apiFetchListener != null) {
-                    apiFetchListener.completed(response);
-                    apiFetchListener = null;
+                if (moviesFetchListener != null) {
+                    BaseMovieBean responseBean = (BaseMovieBean) response;
+                    moviesFetchListener.completed(responseBean);
+                    moviesFetchListener = null;
                 }
             }
 
             @Override
             public void requestFailed(RetrofitError error) {
                 // return error
-                if (apiFetchListener != null) {
-                    apiFetchListener.failed(error.getMessage());
-                    apiFetchListener = null;
+                if (moviesFetchListener != null) {
+                    moviesFetchListener.failed(error.getMessage());
+                    moviesFetchListener = null;
                 }
             }
 
@@ -129,11 +135,11 @@ public class ApiManager {
      * @param movieId   the movie id
      * @param pageCount the page count
      */
-    public void fetchReviewsList(ProgressListener<BaseBean> listener, long movieId, int pageCount) {
+    public void fetchReviewsList(ProgressListener<BaseReviewBean> listener, long movieId, int pageCount) {
 
-        apiFetchListener = listener;
-        if (apiFetchListener != null) {
-            apiFetchListener.inProgress();
+        reviewFetchListener = listener;
+        if (reviewFetchListener != null) {
+            reviewFetchListener.inProgress();
         }
         if (isReviewsAPILoading) {
             return;
@@ -145,18 +151,19 @@ public class ApiManager {
             public void requestCompleted(BaseBean response) {
                 isReviewsAPILoading = false;
                 // return data
-                if (apiFetchListener != null) {
-                    apiFetchListener.completed(response);
-                    apiFetchListener = null;
+                if (reviewFetchListener != null) {
+                    BaseReviewBean responseBean = (BaseReviewBean) response;
+                    reviewFetchListener.completed(responseBean);
+                    reviewFetchListener = null;
                 }
             }
 
             @Override
             public void requestFailed(RetrofitError error) {
                 // return error
-                if (apiFetchListener != null) {
-                    apiFetchListener.failed(error.getMessage());
-                    apiFetchListener = null;
+                if (reviewFetchListener != null) {
+                    reviewFetchListener.failed(error.getMessage());
+                    reviewFetchListener = null;
                 }
             }
 
@@ -169,11 +176,11 @@ public class ApiManager {
      * @param listener the listener
      * @param movieId  the movie id
      */
-    public void fetchVideosList(ProgressListener<BaseBean> listener, long movieId) {
+    public void fetchVideosList(ProgressListener<BaseVideoBean> listener, long movieId) {
 
-        apiFetchListener = listener;
-        if (apiFetchListener != null) {
-            apiFetchListener.inProgress();
+        videoFetchListener = listener;
+        if (videoFetchListener != null) {
+            videoFetchListener.inProgress();
         }
         if (isVideosAPILoading) {
             return;
@@ -185,18 +192,19 @@ public class ApiManager {
             public void requestCompleted(BaseBean response) {
                 isVideosAPILoading = false;
                 // return data
-                if (apiFetchListener != null) {
-                    apiFetchListener.completed(response);
-                    apiFetchListener = null;
+                if (videoFetchListener != null) {
+                    BaseVideoBean responseBean = (BaseVideoBean)response;
+                    videoFetchListener.completed(responseBean);
+                    videoFetchListener = null;
                 }
             }
 
             @Override
             public void requestFailed(RetrofitError error) {
                 // return error
-                if (apiFetchListener != null) {
-                    apiFetchListener.failed(error.getMessage());
-                    apiFetchListener = null;
+                if (videoFetchListener != null) {
+                    videoFetchListener.failed(error.getMessage());
+                    videoFetchListener = null;
                 }
             }
 

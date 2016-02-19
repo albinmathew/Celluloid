@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.adapter.MoviesAdapter;
 import me.albinmathew.celluloid.api.ApiManager;
-import me.albinmathew.celluloid.api.base.BaseBean;
 import me.albinmathew.celluloid.api.base.BaseMovieBean;
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import me.albinmathew.celluloid.app.CAConstants;
@@ -175,7 +174,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     }
 
     private void retrieveMovieList(final String sortOrder, final int pageCount) {
-        ApiManager.getInstance().fetchMoviesList(new ApiManager.ProgressListener<BaseBean>() {
+        ApiManager.getInstance().fetchMoviesList(new ApiManager.ProgressListener<BaseMovieBean>() {
             @Override
             public void inProgress() {
                 if (!swipeLayout.isRefreshing()) {
@@ -192,9 +191,8 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
             }
 
             @Override
-            public void completed(BaseBean responseBean) {
-                BaseMovieBean movieBean = (BaseMovieBean) responseBean;
-                ArrayList<MoviesResponseBean> moviesArrayList = (ArrayList<MoviesResponseBean>) movieBean.getResults();
+            public void completed(BaseMovieBean responseBean) {
+                ArrayList<MoviesResponseBean> moviesArrayList = (ArrayList<MoviesResponseBean>) responseBean.getResults();
                 mPageCount = responseBean.getPage();
                 mMoviesAdapter.getMoviesList().addAll(moviesArrayList);
                 mMoviesAdapter.notifyDataSetChanged();

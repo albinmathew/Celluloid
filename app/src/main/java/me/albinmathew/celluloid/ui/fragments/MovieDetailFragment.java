@@ -27,6 +27,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,6 @@ import java.util.ArrayList;
 
 import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.api.ApiManager;
-import me.albinmathew.celluloid.api.base.BaseBean;
 import me.albinmathew.celluloid.api.base.BaseReviewBean;
 import me.albinmathew.celluloid.api.base.BaseVideoBean;
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
@@ -81,6 +81,7 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
     private LinearLayout mReviewsView;
     private FloatingActionButton mFavorite;
     private Context mContext;
+    private Toolbar mToolbar = null;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -95,7 +96,6 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
 
         if (getArguments().containsKey(CAConstants.INTENT_EXTRA)) {
             moviesResponseBean = getArguments().getParcelable(CAConstants.INTENT_EXTRA);
-            ;
         }
     }
 
@@ -120,10 +120,11 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
         setToolBar(view);
         loadBackdrop(view);
         fetchVideoList();
+        fetchReviewsList();
     }
 
     private void fetchReviewsList() {
-        ApiManager.getInstance().fetchReviewsList(new ApiManager.ProgressListener<BaseBean>() {
+        ApiManager.getInstance().fetchReviewsList(new ApiManager.ProgressListener<BaseReviewBean>() {
             @Override
             public void inProgress() {
 
@@ -135,16 +136,15 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
             }
 
             @Override
-            public void completed(BaseBean response) {
-                BaseReviewBean reviewBean = (BaseReviewBean) response;
-                ArrayList<ReviewResponseBean> reviewArrayList = (ArrayList<ReviewResponseBean>) reviewBean.getResults();
+            public void completed(BaseReviewBean response) {
+                ArrayList<ReviewResponseBean> reviewArrayList = (ArrayList<ReviewResponseBean>) response.getResults();
                 showReviews(reviewArrayList);
             }
         }, moviesResponseBean.getId(), 1);
     }
 
     private void fetchVideoList() {
-        ApiManager.getInstance().fetchVideosList(new ApiManager.ProgressListener<BaseBean>() {
+        ApiManager.getInstance().fetchVideosList(new ApiManager.ProgressListener<BaseVideoBean>() {
             @Override
             public void inProgress() {
 
@@ -156,9 +156,8 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
             }
 
             @Override
-            public void completed(BaseBean response) {
-                BaseVideoBean videoBean = (BaseVideoBean) response;
-                ArrayList<VideoResponseBean> videoArrayList = (ArrayList<VideoResponseBean>) videoBean.getResults();
+            public void completed(BaseVideoBean response) {
+                ArrayList<VideoResponseBean> videoArrayList = (ArrayList<VideoResponseBean>) response.getResults();
                 showTrailers(videoArrayList);
             }
         }, moviesResponseBean.getId());
@@ -189,6 +188,9 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
         mReviewsLabel = (TextView) rootView.findViewById(R.id.reviews_label);
         mReviewsView = (LinearLayout) rootView.findViewById(R.id.reviews);
         mFavorite = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        if (getActivity() instanceof MoviesActivity){
+            mToolbar= (Toolbar) getActivity().findViewById(R.id.toolbar);
+        }
         mFavorite.setOnClickListener(this);
     }
 
@@ -226,11 +228,14 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
                             if (mContext != null && isAdded()) {
                                 mutedColor = palette.getDarkMutedColor(getResources().getColor(R.color.colorPrimaryDark));
                                 collapsingToolbar.setContentScrimColor(mutedColor);
+                                if(mToolbar!=null){
+                                    mToolbar.setBackgroundColor(mutedColor);
+                                }
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                     Window window = getActivity().getWindow();
                                     window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                                    window.setStatusBarColor(mutedColor - 10);
+                                    window.setStatusBarColor(mutedColor - 16);
                                 }
                             }
                         }
@@ -292,7 +297,6 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
                 mTrailersView.addView(thumbContainer);
             }
         }
-        fetchReviewsList();
     }
 
     public void showReviews(ArrayList<ReviewResponseBean> reviews) {
