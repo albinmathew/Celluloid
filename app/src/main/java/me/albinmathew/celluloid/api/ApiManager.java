@@ -125,6 +125,7 @@ public class ApiManager {
 
             @Override
             public void requestFailed(@NonNull RetrofitError error) {
+                isMoviesAPILoading = false;
                 // return error
                 if (moviesFetchListener != null) {
                     moviesFetchListener.failed(error.getMessage());
@@ -168,6 +169,7 @@ public class ApiManager {
             @Override
             public void requestFailed(@NonNull RetrofitError error) {
                 // return error
+                isReviewsAPILoading = false;
                 if (reviewFetchListener != null) {
                     reviewFetchListener.failed(error.getMessage());
                     reviewFetchListener = null;
@@ -208,6 +210,7 @@ public class ApiManager {
 
             @Override
             public void requestFailed(@NonNull RetrofitError error) {
+                isVideosAPILoading = false;
                 // return error
                 if (videoFetchListener != null) {
                     videoFetchListener.failed(error.getMessage());
