@@ -21,9 +21,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,7 +32,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -43,8 +40,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,7 +49,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -212,41 +206,6 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(backdropImage);
-        new AsyncTask<Void, Void, Bitmap>() {
-            @Nullable
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-                try {
-                    return Picasso.with(mContext).load(CAConstants.BACKDROP_BASE_URL +
-                            moviesResponseBean.getBackdropPath()).error(R.drawable.placeholder).get();
-                } catch (IOException ignored) {
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(@Nullable Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-                if (bitmap != null) {
-                    Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(@NonNull Palette palette) {
-                            if (mContext != null && isAdded()) {
-                                mutedColor = palette.getDarkMutedColor(getResources().
-                                        getColor(R.color.colorPrimaryDark));
-                                collapsingToolbar.setContentScrimColor(mutedColor);
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    Window window = getActivity().getWindow();
-                                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                                    window.setStatusBarColor(mutedColor - 6);
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        }.execute(null, null, null);
     }
 
     private void createContentValues() {
