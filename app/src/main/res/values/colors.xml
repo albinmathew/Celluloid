@@ -18,13 +18,11 @@
     <color name="colorPrimary">#d72027</color>
     <color name="colorPrimaryDark">#c22228</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="transparent">#00000000</color>
     <color name="details">#1f2533</color>
 
     <color name="body_text_white">#FFFFFFFF</color>
 
     <color name="body_text_1_inverse">#deffffff</color>
     <color name="separator_light_gray">#ffe1e1e1</color>
-    <color name="separator_dark_gray">#ff8b8b8b</color>
 
 </resources>

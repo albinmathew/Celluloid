@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.api;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.albinmathew.celluloid.api.base.BaseApi;
 import me.albinmathew.celluloid.api.base.BaseBean;
@@ -35,12 +36,18 @@ public class ApiManager {
 
     private static ApiManager sApiManager;
 
+    @Nullable
     private MoviesApi mMoviesApi = null;
+    @Nullable
     private ReviewsApi mReviewsApi = null;
+    @Nullable
     private VideosApi mVideosApi = null;
 
+    @Nullable
     private ProgressListener<BaseMovieBean> moviesFetchListener;
+    @Nullable
     private ProgressListener<BaseReviewBean> reviewFetchListener;
+    @Nullable
     private ProgressListener<BaseVideoBean> videoFetchListener;
 
     private boolean isMoviesAPILoading = false;
@@ -117,7 +124,7 @@ public class ApiManager {
             }
 
             @Override
-            public void requestFailed(RetrofitError error) {
+            public void requestFailed(@NonNull RetrofitError error) {
                 // return error
                 if (moviesFetchListener != null) {
                     moviesFetchListener.failed(error.getMessage());
@@ -159,7 +166,7 @@ public class ApiManager {
             }
 
             @Override
-            public void requestFailed(RetrofitError error) {
+            public void requestFailed(@NonNull RetrofitError error) {
                 // return error
                 if (reviewFetchListener != null) {
                     reviewFetchListener.failed(error.getMessage());
@@ -200,7 +207,7 @@ public class ApiManager {
             }
 
             @Override
-            public void requestFailed(RetrofitError error) {
+            public void requestFailed(@NonNull RetrofitError error) {
                 // return error
                 if (videoFetchListener != null) {
                     videoFetchListener.failed(error.getMessage());

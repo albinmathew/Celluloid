@@ -16,7 +16,7 @@
 
 package me.albinmathew.celluloid.api.base;
 
-import android.util.Log;
+import android.support.annotation.Nullable;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -34,23 +34,21 @@ public abstract class BaseApi  {
     protected BaseApi() {
     }
 
-    /**
-     * Gets api listener.
-     *
-     * @return the api listener
-     */
-    protected abstract BaseAPIListener getApiListener();
-
-
     protected void successResponse(BaseBean responseBean, Response response) {
-        Log.d("SUCCESS_URL",response.getUrl());
         if (getApiListener() != null) {
             getApiListener().requestCompleted(responseBean);
         }
     }
 
+    /**
+     * Gets api listener.
+     *
+     * @return the api listener
+     */
+    @Nullable
+    protected abstract BaseAPIListener getApiListener();
+
     protected void failureResponse(RetrofitError error) {
-        Log.d("ERROR_URL",error.getUrl() + "\n ERROR_REASON : "+error.getResponse().getStatus());
         if (getApiListener() != null) {
             getApiListener().requestFailed(error);
         }

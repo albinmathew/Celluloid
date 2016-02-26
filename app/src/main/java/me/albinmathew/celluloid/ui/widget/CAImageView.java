@@ -18,6 +18,8 @@ package me.albinmathew.celluloid.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,7 +31,8 @@ import me.albinmathew.celluloid.R;
  */
 public class CAImageView extends ImageView {
 
-    private float aspectRatio = 0;
+    private float             aspectRatio       = 0;
+    @Nullable
     private AspectRatioSource aspectRatioSource = null;
 
     /**
@@ -47,7 +50,7 @@ public class CAImageView extends ImageView {
      * @param context the context
      * @param attrs   the attrs
      */
-    public CAImageView(Context context, AttributeSet attrs) {
+    public CAImageView(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
 
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CAImageView);
@@ -160,6 +163,7 @@ public class CAImageView extends ImageView {
 
     private static class ViewAspectRatioSource implements
             AspectRatioSource {
+        @Nullable
         private View v = null;
 
         /**

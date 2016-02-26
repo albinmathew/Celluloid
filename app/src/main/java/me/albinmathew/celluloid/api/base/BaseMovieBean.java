@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.api.base;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class BaseMovieBean extends BaseBean {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeTypedList(results);
     }
@@ -52,16 +53,18 @@ public class BaseMovieBean extends BaseBean {
     public BaseMovieBean() {
     }
 
-    protected BaseMovieBean(Parcel in) {
+    protected BaseMovieBean(@NonNull Parcel in) {
         super(in);
         this.results = in.createTypedArrayList(MoviesResponseBean.CREATOR);
     }
 
     public static final Creator<BaseMovieBean> CREATOR = new Creator<BaseMovieBean>() {
-        public BaseMovieBean createFromParcel(Parcel source) {
+        @NonNull
+        public BaseMovieBean createFromParcel(@NonNull Parcel source) {
             return new BaseMovieBean(source);
         }
 
+        @NonNull
         public BaseMovieBean[] newArray(int size) {
             return new BaseMovieBean[size];
         }

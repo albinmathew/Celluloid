@@ -16,6 +16,8 @@
 
 package me.albinmathew.celluloid.api;
 
+import android.support.annotation.Nullable;
+
 import me.albinmathew.celluloid.api.base.BaseApi;
 import me.albinmathew.celluloid.api.base.BaseMovieBean;
 import me.albinmathew.celluloid.app.CAConstants;
@@ -32,6 +34,7 @@ import retrofit.client.Response;
  */
 public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
 
+    @Nullable
     private BaseAPIListener otBaseApiListener = null;
 
     /**
@@ -49,7 +52,7 @@ public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
      */
     public void fetchMoviesList(BaseAPIListener apiListener, String sortOrder, int pageCount) {
         otBaseApiListener = apiListener;
-        CelluloidApp.getRestClient().getMovieDbService().getMoviesList(sortOrder, CAConstants.API_KEY, pageCount,false,this);
+        CelluloidApp.getRestClient().getMovieDbService().getMoviesList(sortOrder, CAConstants.API_KEY, pageCount, false, this);
     }
 
     /**
@@ -59,6 +62,7 @@ public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
         this.otBaseApiListener = null;
     }
 
+    @Nullable
     @Override
     public BaseAPIListener getApiListener() {
         return otBaseApiListener;
@@ -66,7 +70,7 @@ public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
 
     @Override
     public void success(BaseMovieBean responseBean, Response response) {
-        successResponse(responseBean,response);
+        successResponse(responseBean, response);
     }
 
     @Override

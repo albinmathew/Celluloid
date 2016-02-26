@@ -17,8 +17,11 @@
 package me.albinmathew.celluloid.ui.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -35,14 +38,16 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.adapter.MoviesAdapter;
 import me.albinmathew.celluloid.api.ApiManager;
 import me.albinmathew.celluloid.api.base.BaseMovieBean;
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import me.albinmathew.celluloid.app.CAConstants;
+import me.albinmathew.celluloid.data.MovieContract;
 import me.albinmathew.celluloid.listener.ControlLayerListener;
-import me.albinmathew.celluloid.listener.HidingScrollListener;
 import me.albinmathew.celluloid.listener.OnScrollListener;
 import me.albinmathew.celluloid.listener.SortSelectListener;
 import me.albinmathew.celluloid.ui.fragments.SortDialogFragment;
@@ -62,20 +67,31 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     private static final String STATE_CURRENT_SORT_SELECTION = "state_movies_current_sort";
     private static final String STATE_PAGE_COUNT = "state_movie_page_count";
     private final ControlLayerListener mControlLayerListener = this;
-    private MoviesAdapter mMoviesAdapter;
-    private RecyclerView mRecyclerView;
-    private GridLayoutManager mGridLayoutManager;
+
+    @Bind(R.id.recycler_view)
+    public RecyclerView mRecyclerView;
+    @Bind(R.id.swipe_refresh_layout)
+    public SwipeRefreshLayout swipeLayout;
+    @Bind(R.id.sort_layout)
+    public RelativeLayout mFilterPanelLinearLayout;
+
     private int mPageCount = 0;
-    private SwipeRefreshLayout swipeLayout;
-    private RelativeLayout mFilterPanelLinearLayout;
+    private int mSelectedPosition = -1;
+    @Nullable
     private String mCurrentSortSelection = CAConstants.POPULARITY;
+    @Nullable
+    private MoviesAdapter mMoviesAdapter;
+    private GridLayoutManager mGridLayoutManager;
+    @Nullable
     private final OnScrollListener mLoadMoreEndlessScrolling = new OnScrollListener(mGridLayoutManager) {
         @Override
         public void onLoadMore() {
-            if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
-                retrieveMovieList(mCurrentSortSelection, getPageCount() + 1);
-            } else {
-                showSnackbar();
+            if (!mCurrentSortSelection.equals(CAConstants.FAVOURITES)) {
+                if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
+                    retrieveMovieList(mCurrentSortSelection, getPageCount() + 1);
+                } else {
+                    showSnackBar();
+                }
             }
         }
 
@@ -94,32 +110,16 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
             }
         }
     };
-    private int mSelectedPosition = -1;
     /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
+     * Whether or not the activity is in two-pane mode, i.e. running on a tablet device.
      */
     private boolean mTwoPane;
-    private HidingScrollListener mFilterPanelScrollListener = new HidingScrollListener() {
-        @Override
-        public void onHide() {
-            if (mControlLayerListener != null) {
-                mControlLayerListener.hideControls();
-            }
-        }
-
-        @Override
-        public void onShow() {
-            if (mControlLayerListener != null) {
-                mControlLayerListener.showControls();
-            }
-        }
-    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initViews();
@@ -141,7 +141,9 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
                         clearAdapter();
                         retrieveMovieList(mCurrentSortSelection, 1);
                     } else {
-                        showSnackbar();
+                        swipeLayout.setRefreshing(false);
+                        showSnackBar();
+                        showFavouriteMovies();
                     }
                 }
             }, 500);
@@ -155,13 +157,10 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
         }
-        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(android.R.color.holo_red_light);
-        mFilterPanelLinearLayout = (RelativeLayout) findViewById(R.id.sort_layout);
         mGridLayoutManager = new GridLayoutManager(this, CommonUtil.isTablet(this) ? 3 : 2);
         mLoadMoreEndlessScrolling.setGridLayoutManager(mGridLayoutManager);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.addOnScrollListener(mLoadMoreEndlessScrolling);
         mRecyclerView.setHasFixedSize(true);
@@ -173,6 +172,23 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         });
     }
 
+    /**
+     * Clears the adapter
+     */
+    private void clearAdapter() {
+        mPageCount = 0;
+        mMoviesAdapter.getMoviesList().clear();
+        if (mLoadMoreEndlessScrolling != null) {
+            mLoadMoreEndlessScrolling.clearItemCountVariables();
+        }
+    }
+
+    /**
+     * Retrieve list of movies from server
+     *
+     * @param sortOrder sorting category
+     * @param pageCount page number
+     */
     private void retrieveMovieList(final String sortOrder, final int pageCount) {
         ApiManager.getInstance().fetchMoviesList(new ApiManager.ProgressListener<BaseMovieBean>() {
             @Override
@@ -187,11 +203,11 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
                 if (swipeLayout.isRefreshing()) {
                     swipeLayout.setRefreshing(false);
                 }
-                showSnackbar();
+                showSnackBar();
             }
 
             @Override
-            public void completed(BaseMovieBean responseBean) {
+            public void completed(@NonNull BaseMovieBean responseBean) {
                 ArrayList<MoviesResponseBean> moviesArrayList = (ArrayList<MoviesResponseBean>) responseBean.getResults();
                 mPageCount = responseBean.getPage();
                 mMoviesAdapter.getMoviesList().addAll(moviesArrayList);
@@ -203,8 +219,41 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         }, sortOrder, pageCount);
     }
 
+    private void showSnackBar() {
+        Snackbar.make(findViewById(android.R.id.content), "Check internet connectivity", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
+    /**
+     * show Favourite movies from database
+     */
+    private void showFavouriteMovies() {
+        mCurrentSortSelection = CAConstants.FAVOURITES;
+        Cursor cursor = getContentResolver().query(MovieContract.Movie.CONTENT_URI, null, null, null, null);
+        ArrayList<MoviesResponseBean> mPosterList = new ArrayList<>();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                MoviesResponseBean resultModel = new MoviesResponseBean();
+                resultModel.setTitle(cursor.getString(cursor.getColumnIndex(MovieContract.Movie.COLUMN_TITLE)));
+                resultModel.setPosterPath(cursor.getString(cursor.getColumnIndex(MovieContract.Movie.COLUMN_POSTER_URL)));
+                resultModel.setBackdropPath(cursor.getString(cursor.getColumnIndex(MovieContract.Movie.COLUMN_BACK_DROP_URL)));
+                resultModel.setOriginalTitle(cursor.getString(cursor.getColumnIndex(MovieContract.Movie.COLUMN_ORIGINAL_TITLE)));
+                resultModel.setOverview(cursor.getString(cursor.getColumnIndex(MovieContract.Movie.COLUMN_PLOT)));
+                resultModel.setVoteAverage(cursor.getDouble(cursor.getColumnIndex(MovieContract.Movie.COLUMN_RATING)));
+                resultModel.setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieContract.Movie.COLUMN_RELEASE_DATE)));
+                resultModel.setId(cursor.getLong(cursor.getColumnIndex(MovieContract.Movie.COLUMN_MOVIE_ID)));
+                resultModel.setGenreId(CommonUtil.convertStringToArray(cursor.getString(cursor.getColumnIndex(MovieContract.Movie.COLUMN_GENRE_ID))));
+                mPosterList.add(resultModel);
+            }
+            clearAdapter();
+            mMoviesAdapter.getMoviesList().addAll(mPosterList);
+            mMoviesAdapter.notifyDataSetChanged();
+            cursor.close();
+        }
+    }
+
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STATE_MOVIES, new ArrayList<>(mMoviesAdapter.getMoviesList()));
         outState.putInt(STATE_SELECTED_POSITION, mSelectedPosition);
@@ -223,11 +272,6 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
                 setInterpolator(new AccelerateInterpolator(2));
     }
 
-    private void showSnackbar() {
-        Snackbar.make(findViewById(android.R.id.content), "Check internet connectivity", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_movies, menu);
@@ -235,7 +279,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_about) {
             startActivity(new Intent(this, AboutActivity.class));
@@ -250,11 +294,15 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
             @Override
             public void run() {
                 swipeLayout.setRefreshing(false);
-                if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
-                    clearAdapter();
-                    retrieveMovieList(mCurrentSortSelection, 1);
+                if (!mCurrentSortSelection.equals(CAConstants.FAVOURITES)) {
+                    if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
+                        clearAdapter();
+                        retrieveMovieList(mCurrentSortSelection, 1);
+                    } else {
+                        showSnackBar();
+                    }
                 } else {
-                    showSnackbar();
+                    showFavouriteMovies();
                 }
             }
         }, 500);
@@ -273,33 +321,32 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         sortDialogFragment.show(getFragmentManager(), null);
     }
 
-    /**
-     * On filter click.
-     *
-     * @param view the view
-     */
-    public void onFilterClick(View view) {
-    }
-
     @Override
     public void onSortCategorySelected(String selection) {
         mCurrentSortSelection = selection;
-        if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
-            clearAdapter();
-            retrieveMovieList(mCurrentSortSelection, 1);
-        } else {
-            showSnackbar();
+        switch (mCurrentSortSelection) {
+            case CAConstants.POPULARITY:
+            case CAConstants.VOTE_AVERAGE:
+                fetchSortedList();
+                break;
+            case CAConstants.FAVOURITES:
+                showFavouriteMovies();
+                break;
+            default:
+                showFavouriteMovies();
+                break;
         }
     }
 
     /**
-     * Clears the adapter
+     * Fetch sorted list
      */
-    private void clearAdapter() {
-        mPageCount = 0;
-        mMoviesAdapter.getMoviesList().clear();
-        if (mLoadMoreEndlessScrolling != null) {
-            mLoadMoreEndlessScrolling.clearItemCountVariables();
+    private void fetchSortedList() {
+        if (CommonUtil.hasInternetAccess(MoviesActivity.this)) {
+            clearAdapter();
+            retrieveMovieList(mCurrentSortSelection, 1);
+        } else {
+            showSnackBar();
         }
     }
 
@@ -312,6 +359,11 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
         return mPageCount;
     }
 
+    /**
+     * Is two pane boolean.
+     *
+     * @return the boolean
+     */
     public boolean isTwoPane() {
         return mTwoPane;
     }

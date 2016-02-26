@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.api.response;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -26,15 +27,39 @@ import me.albinmathew.celluloid.api.base.BaseVideoBean;
  * @author albin
  * @date 16/2/16
  */
-public class VideoResponseBean extends BaseVideoBean{
+public class VideoResponseBean extends BaseVideoBean {
 
+    public static final Creator<VideoResponseBean> CREATOR = new Creator<VideoResponseBean>() {
+        @NonNull
+        public VideoResponseBean createFromParcel(@NonNull Parcel source) {
+            return new VideoResponseBean(source);
+        }
+
+        @NonNull
+        public VideoResponseBean[] newArray(int size) {
+            return new VideoResponseBean[size];
+        }
+    };
     private String id;
     private String name;
     private String site;
     @SerializedName("key")
     private String videoId;
-    private int size;
+    private int    size;
     private String type;
+
+    public VideoResponseBean() {
+    }
+
+    protected VideoResponseBean(@NonNull Parcel in) {
+        super(in);
+        this.id = in.readString();
+        this.name = in.readString();
+        this.site = in.readString();
+        this.videoId = in.readString();
+        this.size = in.readInt();
+        this.type = in.readString();
+    }
 
     public String getId() {
         return id;
@@ -90,7 +115,7 @@ public class VideoResponseBean extends BaseVideoBean{
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(this.id);
         dest.writeString(this.name);
@@ -99,27 +124,4 @@ public class VideoResponseBean extends BaseVideoBean{
         dest.writeInt(this.size);
         dest.writeString(this.type);
     }
-
-    public VideoResponseBean() {
-    }
-
-    protected VideoResponseBean(Parcel in) {
-        super(in);
-        this.id = in.readString();
-        this.name = in.readString();
-        this.site = in.readString();
-        this.videoId = in.readString();
-        this.size = in.readInt();
-        this.type = in.readString();
-    }
-
-    public static final Creator<VideoResponseBean> CREATOR = new Creator<VideoResponseBean>() {
-        public VideoResponseBean createFromParcel(Parcel source) {
-            return new VideoResponseBean(source);
-        }
-
-        public VideoResponseBean[] newArray(int size) {
-            return new VideoResponseBean[size];
-        }
-    };
 }

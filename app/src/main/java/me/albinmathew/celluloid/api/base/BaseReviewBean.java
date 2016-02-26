@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.api.base;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -47,21 +48,23 @@ public class BaseReviewBean extends BaseBean {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeTypedList(results);
     }
 
-    protected BaseReviewBean(Parcel in) {
+    protected BaseReviewBean(@NonNull Parcel in) {
         super(in);
         this.results = in.createTypedArrayList(ReviewResponseBean.CREATOR);
     }
 
     public static final Creator<BaseReviewBean> CREATOR = new Creator<BaseReviewBean>() {
-        public BaseReviewBean createFromParcel(Parcel source) {
+        @NonNull
+        public BaseReviewBean createFromParcel(@NonNull Parcel source) {
             return new BaseReviewBean(source);
         }
 
+        @NonNull
         public BaseReviewBean[] newArray(int size) {
             return new BaseReviewBean[size];
         }

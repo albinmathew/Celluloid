@@ -16,6 +16,8 @@
 
 package me.albinmathew.celluloid.api;
 
+import android.support.annotation.Nullable;
+
 import me.albinmathew.celluloid.api.base.BaseApi;
 import me.albinmathew.celluloid.api.base.BaseVideoBean;
 import me.albinmathew.celluloid.app.CAConstants;
@@ -32,6 +34,7 @@ import retrofit.client.Response;
  */
 public class VideosApi extends BaseApi implements Callback<BaseVideoBean> {
 
+    @Nullable
     private BaseAPIListener otBaseApiListener = null;
 
     /**
@@ -58,6 +61,7 @@ public class VideosApi extends BaseApi implements Callback<BaseVideoBean> {
         this.otBaseApiListener = null;
     }
 
+    @Nullable
     @Override
     public BaseAPIListener getApiListener() {
         return otBaseApiListener;
@@ -65,7 +69,7 @@ public class VideosApi extends BaseApi implements Callback<BaseVideoBean> {
 
     @Override
     public void success(BaseVideoBean responseBean, Response response) {
-        successResponse(responseBean,response);
+        successResponse(responseBean, response);
     }
 
     @Override

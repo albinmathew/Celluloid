@@ -18,6 +18,7 @@ package me.albinmathew.celluloid.api.base;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -66,23 +67,25 @@ public class BaseBean implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(this.page);
         dest.writeInt(this.totalResults);
         dest.writeInt(this.totalPages);
     }
 
-    protected BaseBean(Parcel in) {
+    protected BaseBean(@NonNull Parcel in) {
         this.page = in.readInt();
         this.totalResults = in.readInt();
         this.totalPages = in.readInt();
     }
 
     public static final Creator<BaseBean> CREATOR = new Creator<BaseBean>() {
-        public BaseBean createFromParcel(Parcel source) {
+        @NonNull
+        public BaseBean createFromParcel(@NonNull Parcel source) {
             return new BaseBean(source);
         }
 
+        @NonNull
         public BaseBean[] newArray(int size) {
             return new BaseBean[size];
         }

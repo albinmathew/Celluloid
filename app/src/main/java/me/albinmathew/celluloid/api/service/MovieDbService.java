@@ -43,7 +43,7 @@ public interface MovieDbService {
      */
     @GET("/3/discover/movie")
     void getMoviesList(@Query("sort_by") String sort_type,
-                       @Query("api_key") String api_key, @Query("page") int page,@Query("include_adult") boolean includeAdult,
+                       @Query("api_key") String api_key, @Query("page") int page, @Query("include_adult") boolean includeAdult,
                        Callback<BaseMovieBean> callback);
 
     /**
@@ -62,7 +62,7 @@ public interface MovieDbService {
      * @param callback the callback
      */
     @GET("/3/movie/{id}/videos")
-    void getVideosList(@Path("id") long movieId,@Query("api_key") String api_key, Callback<BaseVideoBean> callback);
+    void getVideosList(@Path("id") long movieId, @Query("api_key") String api_key, Callback<BaseVideoBean> callback);
 
     /**
      * Gets reviews list.
@@ -73,6 +73,6 @@ public interface MovieDbService {
      * @param callback the callback
      */
     @GET("/3/movie/{id}/reviews")
-    void getReviewsList(@Path("id") long movieId,@Query("api_key") String api_key, @Query("page") int page,
+    void getReviewsList(@Path("id") long movieId, @Query("api_key") String api_key, @Query("page") int page,
                         Callback<BaseReviewBean> callback);
 }

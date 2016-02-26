@@ -18,6 +18,7 @@ package me.albinmathew.celluloid.api.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -29,28 +30,60 @@ import me.albinmathew.celluloid.api.base.BaseMovieBean;
  */
 public class MoviesResponseBean extends BaseMovieBean implements Parcelable {
 
+    public static final Creator<MoviesResponseBean> CREATOR = new Creator<MoviesResponseBean>() {
+        @NonNull
+        public MoviesResponseBean createFromParcel(@NonNull Parcel source) {
+            return new MoviesResponseBean(source);
+        }
+
+        @NonNull
+        public MoviesResponseBean[] newArray(int size) {
+            return new MoviesResponseBean[size];
+        }
+    };
     @SerializedName("poster_path")
-    private String posterPath;
+    private String  posterPath;
     private boolean adult;
-    private String overview;
+    private String  overview;
     @SerializedName("release_date")
-    private String releaseDate;
-    private long id;
+    private String  releaseDate;
+    private long    id;
     @SerializedName("original_title")
-    private String originalTitle;
+    private String  originalTitle;
     @SerializedName("original_language")
-    private String originalLanguage;
-    private String title;
+    private String  originalLanguage;
+    private String  title;
     @SerializedName("backdrop_path")
-    private String backdropPath;
-    private double popularity;
+    private String  backdropPath;
+    private double  popularity;
     @SerializedName("vote_count")
-    private long voteCount;
+    private long    voteCount;
     private boolean video;
     @SerializedName("vote_average")
-    private double voteAverage;
+    private double  voteAverage;
     @SerializedName("genre_ids")
-    private int[] genreId;
+    private int[]   genreId;
+
+    public MoviesResponseBean() {
+    }
+
+    private MoviesResponseBean(@NonNull Parcel in) {
+        super(in);
+        this.posterPath = in.readString();
+        this.adult = in.readByte() != 0;
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.id = in.readLong();
+        this.originalTitle = in.readString();
+        this.originalLanguage = in.readString();
+        this.title = in.readString();
+        this.backdropPath = in.readString();
+        this.popularity = in.readDouble();
+        this.voteCount = in.readLong();
+        this.video = in.readByte() != 0;
+        this.voteAverage = in.readDouble();
+        this.genreId = in.createIntArray();
+    }
 
     public String getPosterPath() {
         return posterPath;
@@ -88,7 +121,7 @@ public class MoviesResponseBean extends BaseMovieBean implements Parcelable {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -152,7 +185,7 @@ public class MoviesResponseBean extends BaseMovieBean implements Parcelable {
         return voteAverage;
     }
 
-    public void setVoteAverage(int voteAverage) {
+    public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
     }
 
@@ -170,7 +203,7 @@ public class MoviesResponseBean extends BaseMovieBean implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(this.posterPath);
         dest.writeByte(adult ? (byte) 1 : (byte) 0);
@@ -187,35 +220,4 @@ public class MoviesResponseBean extends BaseMovieBean implements Parcelable {
         dest.writeDouble(this.voteAverage);
         dest.writeIntArray(this.genreId);
     }
-
-    public MoviesResponseBean() {
-    }
-
-    private MoviesResponseBean(Parcel in) {
-        super(in);
-        this.posterPath = in.readString();
-        this.adult = in.readByte() != 0;
-        this.overview = in.readString();
-        this.releaseDate = in.readString();
-        this.id = in.readLong();
-        this.originalTitle = in.readString();
-        this.originalLanguage = in.readString();
-        this.title = in.readString();
-        this.backdropPath = in.readString();
-        this.popularity = in.readDouble();
-        this.voteCount = in.readLong();
-        this.video = in.readByte() != 0;
-        this.voteAverage = in.readDouble();
-        this.genreId = in.createIntArray();
-    }
-
-    public static final Creator<MoviesResponseBean> CREATOR = new Creator<MoviesResponseBean>() {
-        public MoviesResponseBean createFromParcel(Parcel source) {
-            return new MoviesResponseBean(source);
-        }
-
-        public MoviesResponseBean[] newArray(int size) {
-            return new MoviesResponseBean[size];
-        }
-    };
 }

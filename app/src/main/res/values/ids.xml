@@ -15,6 +15,7 @@
   -->
 
 <resources>
-    <item name="button_sort_popularity" type="id">button_sort_popularity</item>
-    <item name="button_sort_mostrated" type="id">button_sort_whatsnew</item>
+    <item name="button_sort_popularity" type="id">popularity</item>
+    <item name="button_sort_mostrated" type="id">rated</item>
+    <item name="button_favourites" type="id">favourites</item>
 </resources>

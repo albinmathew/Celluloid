@@ -16,6 +16,7 @@
 
 package me.albinmathew.celluloid.listener;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -27,8 +28,8 @@ import android.support.v7.widget.RecyclerView;
  */
 public abstract class OnScrollListener extends RecyclerView.OnScrollListener {
     private int mFirstVisibleItem, mVisibleItemCount, mTotalItemCount;
-    private int mPreviousTotal = 0; // The total number of items in the data set after the last load
-    private boolean mIsLoading = true; // True if we are still waiting for the last set of data to load.
+    private int     mPreviousTotal = 0; // The total number of items in the data set after the last load
+    private boolean mIsLoading     = true; // True if we are still waiting for the last set of data to load.
 
     private GridLayoutManager mGridLayoutManager;
 
@@ -52,18 +53,16 @@ public abstract class OnScrollListener extends RecyclerView.OnScrollListener {
     }
 
     @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
         mVisibleItemCount = recyclerView.getChildCount();
         mTotalItemCount = mGridLayoutManager.getItemCount();
         mFirstVisibleItem = mGridLayoutManager.findFirstVisibleItemPosition();
 
-        if (mIsLoading) {
-            if (mTotalItemCount > mPreviousTotal) {
-                mIsLoading = false;
-                mPreviousTotal = mTotalItemCount;
-            }
+        if (mIsLoading && mTotalItemCount > mPreviousTotal) {
+            mIsLoading = false;
+            mPreviousTotal = mTotalItemCount;
         }
         int mVisibleThreshold = 4;
         if (!mIsLoading && (mTotalItemCount - mVisibleItemCount)

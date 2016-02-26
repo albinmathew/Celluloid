@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.api.response;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import me.albinmathew.celluloid.api.base.BaseReviewBean;
 
@@ -26,10 +27,32 @@ import me.albinmathew.celluloid.api.base.BaseReviewBean;
  */
 public class ReviewResponseBean extends BaseReviewBean {
 
+    public static final Creator<ReviewResponseBean> CREATOR = new Creator<ReviewResponseBean>() {
+        @NonNull
+        public ReviewResponseBean createFromParcel(@NonNull Parcel source) {
+            return new ReviewResponseBean(source);
+        }
+
+        @NonNull
+        public ReviewResponseBean[] newArray(int size) {
+            return new ReviewResponseBean[size];
+        }
+    };
     private String id;
     private String author;
     private String content;
     private String url;
+
+    public ReviewResponseBean() {
+    }
+
+    protected ReviewResponseBean(@NonNull Parcel in) {
+        super(in);
+        this.id = in.readString();
+        this.author = in.readString();
+        this.content = in.readString();
+        this.url = in.readString();
+    }
 
     public String getId() {
         return id;
@@ -69,32 +92,11 @@ public class ReviewResponseBean extends BaseReviewBean {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(this.id);
         dest.writeString(this.author);
         dest.writeString(this.content);
         dest.writeString(this.url);
     }
-
-    public ReviewResponseBean() {
-    }
-
-    protected ReviewResponseBean(Parcel in) {
-        super(in);
-        this.id = in.readString();
-        this.author = in.readString();
-        this.content = in.readString();
-        this.url = in.readString();
-    }
-
-    public static final Creator<ReviewResponseBean> CREATOR = new Creator<ReviewResponseBean>() {
-        public ReviewResponseBean createFromParcel(Parcel source) {
-            return new ReviewResponseBean(source);
-        }
-
-        public ReviewResponseBean[] newArray(int size) {
-            return new ReviewResponseBean[size];
-        }
-    };
 }

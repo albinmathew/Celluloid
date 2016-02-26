@@ -14,46 +14,65 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@android:color/white"
-    android:orientation="vertical">
+    tools:ignore="Overdraw">
 
-    <RadioGroup
+    <View
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="1.0dip"
+        android:layout_gravity="bottom"
+        android:background="@color/separator_light_gray" />
 
-        <RadioButton
-            android:id="@id/button_sort_popularity"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:alpha="0.8"
-            android:drawableLeft="@drawable/ic_sort_popular"
-            android:paddingBottom="10.0dip"
-            android:paddingTop="10.0dip"
-            android:text="@string/text_popular" />
+    <RadioButton
+        android:id="@id/button_sort_popularity"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:drawableLeft="@drawable/ic_sort_popular"
+        android:paddingBottom="10.0dip"
+        android:paddingTop="10.0dip"
+        android:text="@string/text_popular" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1.0dip"
-            android:layout_gravity="bottom"
-            android:background="@color/separator_light_gray" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
+        android:layout_gravity="bottom"
+        android:background="@color/separator_light_gray" />
 
-        <RadioButton
-            android:id="@id/button_sort_mostrated"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:alpha="0.8"
-            android:drawableLeft="@drawable/ic_star"
-            android:paddingBottom="10.0dip"
-            android:paddingTop="10.0dip"
-            android:text="@string/text_rated" />
+    <RadioButton
+        android:id="@id/button_sort_mostrated"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:drawableLeft="@drawable/ic_star"
+        android:paddingBottom="10.0dip"
+        android:paddingTop="10.0dip"
+        android:text="@string/text_rated" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1.0dip"
-            android:layout_gravity="bottom"
-            android:background="@color/separator_light_gray" />
-    </RadioGroup>
-</LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
+        android:layout_gravity="bottom"
+        android:background="@color/separator_light_gray" />
+
+    <RadioButton
+        android:id="@id/button_favourites"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:drawableLeft="@drawable/ic_sort_popular"
+        android:paddingBottom="10.0dip"
+        android:paddingTop="10.0dip"
+        android:text="@string/favourites" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
+        android:layout_gravity="bottom"
+        android:background="@color/separator_light_gray" />
+</RadioGroup>

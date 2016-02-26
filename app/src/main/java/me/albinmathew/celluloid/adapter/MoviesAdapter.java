@@ -19,16 +19,20 @@ package me.albinmathew.celluloid.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
 import me.albinmathew.celluloid.app.CAConstants;
@@ -60,6 +64,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
         this.mContext = context;
     }
 
+    @NonNull
     @Override
     public MovieGridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_movie, parent, false);
@@ -67,19 +72,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
     }
 
     @Override
-    public int getItemCount() {
-        return mMoviesList.size();
-    }
-
-    @Override
-    public void onBindViewHolder(final MovieGridViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MovieGridViewHolder holder, int position) {
         final MoviesResponseBean movies = mMoviesList.get(position);
         holder.mMovieId.setText(CommonUtil.getGenreList(movies));
         holder.mMovieName.setText(movies.getTitle());
-        Picasso.with(mContext).load(CAConstants.POSTER_BASE_URL + movies.getPosterPath()).into(holder.mImageView);
+        Glide.with(mContext)
+                .load(CAConstants.POSTER_BASE_URL + movies.getPosterPath())
+                .error(R.drawable.placeholder)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.mImageView);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(@NonNull View v) {
                 if (mContext.isTwoPane()) {
                     Bundle arguments = new Bundle();
                     arguments.putParcelable(CAConstants.INTENT_EXTRA, movies);
@@ -96,6 +101,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
                 }
             }
         });
+    }
+
+    @Override
+    public int getItemCount() {
+        return mMoviesList.size();
     }
 
     /**
@@ -120,9 +130,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
      * The type Movie grid view holder.
      */
     public class MovieGridViewHolder extends RecyclerView.ViewHolder {
-        private final TextView mMovieId;
-        private final TextView mMovieName;
-        private final CAImageView mImageView;
+        @Bind(R.id.movie_item_genres)
+        TextView mMovieId;
+        @Bind(R.id.movie_item_title)
+        TextView mMovieName;
+        @Bind(R.id.movie_item_image)
+        CAImageView mImageView;
+        @NonNull
         private final View mView;
 
         /**
@@ -130,12 +144,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieGridV
          *
          * @param itemView the item view
          */
-        public MovieGridViewHolder(View itemView) {
+        public MovieGridViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
-            mMovieId = (TextView) itemView.findViewById(R.id.movie_item_genres);
-            mMovieName = (TextView) itemView.findViewById(R.id.movie_item_title);
-            mImageView = (CAImageView) itemView.findViewById(R.id.movie_item_image);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

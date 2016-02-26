@@ -16,6 +16,8 @@
 
 package me.albinmathew.celluloid.api;
 
+import android.support.annotation.Nullable;
+
 import me.albinmathew.celluloid.api.base.BaseApi;
 import me.albinmathew.celluloid.api.base.BaseReviewBean;
 import me.albinmathew.celluloid.app.CAConstants;
@@ -32,6 +34,7 @@ import retrofit.client.Response;
  */
 public class ReviewsApi extends BaseApi implements Callback<BaseReviewBean> {
 
+    @Nullable
     private BaseAPIListener otBaseApiListener = null;
 
     /**
@@ -59,6 +62,7 @@ public class ReviewsApi extends BaseApi implements Callback<BaseReviewBean> {
         this.otBaseApiListener = null;
     }
 
+    @Nullable
     @Override
     public BaseAPIListener getApiListener() {
         return otBaseApiListener;
@@ -66,7 +70,7 @@ public class ReviewsApi extends BaseApi implements Callback<BaseReviewBean> {
 
     @Override
     public void success(BaseReviewBean responseBean, Response response) {
-        successResponse(responseBean,response);
+        successResponse(responseBean, response);
     }
 
     @Override

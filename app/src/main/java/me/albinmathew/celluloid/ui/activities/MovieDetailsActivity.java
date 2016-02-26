@@ -18,6 +18,8 @@ package me.albinmathew.celluloid.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -26,10 +28,9 @@ import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.ui.fragments.MovieDetailFragment;
 
 /**
- * An activity representing a single Movie detail screen. This
- * activity is only used narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a {@link MoviesActivity}.
+ * An activity representing a single Movie detail screen. This activity is only used narrow width
+ * devices. On tablet-size devices, item details are presented side-by-side with a list of items in
+ * a {@link MoviesActivity}.
  */
 public class MovieDetailsActivity extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         loadDetailsFragment(savedInstanceState);
     }
 
-    private void loadDetailsFragment(Bundle savedInstanceState) {
+    private void loadDetailsFragment(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             arguments.putParcelable(CAConstants.INTENT_EXTRA, getIntent().getParcelableExtra(CAConstants.INTENT_EXTRA));
@@ -53,7 +54,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             navigateUpTo(new Intent(this, MoviesActivity.class));
