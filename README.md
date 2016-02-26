@@ -17,9 +17,9 @@ You must provide your own API key in order to build the app.
 
 ## Screens
 
-![screen](../stage2/art/movies_grid.png)   ![screen](../stage2/art/movie_detail.png)
-![screen](../stage2/art/movie_grid_tab.png)   ![screen](../stage2/art/movie_detail_tab.png)
-![screen](../stage2/art/movies_grid_portrait.png)   ![screen](../stage2/art/movies_sort.png)
+![screen](../stage2/art/movies_grid.png) ![screen](../stage2/art/movie_detail.png)
+![screen](../stage2/art/movie_grid_tab.png) ![screen](../stage2/art/movie_detail_tab.png)
+![screen](../stage2/art/movies_grid_portrait.png) ![screen](../stage2/art/movie_sort.png)
 
 
 ## License
