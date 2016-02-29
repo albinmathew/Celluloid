@@ -101,8 +101,6 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
     @Bind(R.id.fab)
     public FloatingActionButton mFavorite;
 
-    private int mutedColor;
-    private CollapsingToolbarLayout collapsingToolbar;
     @Nullable
     private MoviesResponseBean moviesResponseBean;
     private Context mContext;
@@ -187,7 +185,7 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
     }
 
     private void setToolBar(@NonNull View view) {
-        collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.toolbar_layout);
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.toolbar_layout);
         collapsingToolbar.setTitle(moviesResponseBean.getTitle());
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
