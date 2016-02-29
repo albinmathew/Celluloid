@@ -1,4 +1,5 @@
 # Celluloid
+[![Build Status](https://travis-ci.org/albinmathew/Celluloid.svg?branch=master)](https://travis-ci.org/albinmathew/Celluloid)
 
 Stage 1 and 2 of the popular movies project made from scratch for Android Developer Nanodegree program.
 
