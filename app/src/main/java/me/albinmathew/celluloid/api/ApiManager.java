@@ -17,9 +17,13 @@
 package me.albinmathew.celluloid.api;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import me.albinmathew.celluloid.api.base.BaseApi;
-import me.albinmathew.celluloid.api.base.BaseResponseBean;
+import me.albinmathew.celluloid.api.base.BaseBean;
+import me.albinmathew.celluloid.api.base.BaseMovieBean;
+import me.albinmathew.celluloid.api.base.BaseReviewBean;
+import me.albinmathew.celluloid.api.base.BaseVideoBean;
 import retrofit.RetrofitError;
 
 /**
@@ -31,9 +35,24 @@ import retrofit.RetrofitError;
 public class ApiManager {
 
     private static ApiManager sApiManager;
+
+    @Nullable
     private MoviesApi mMoviesApi = null;
-    private ProgressListener<BaseResponseBean> apiFetchListener;
+    @Nullable
+    private ReviewsApi mReviewsApi = null;
+    @Nullable
+    private VideosApi mVideosApi = null;
+
+    @Nullable
+    private ProgressListener<BaseMovieBean> moviesFetchListener;
+    @Nullable
+    private ProgressListener<BaseReviewBean> reviewFetchListener;
+    @Nullable
+    private ProgressListener<BaseVideoBean> videoFetchListener;
+
     private boolean isMoviesAPILoading = false;
+    private boolean isReviewsAPILoading = false;
+    private boolean isVideosAPILoading = false;
 
     /**
      * Gets instance.
@@ -56,6 +75,24 @@ public class ApiManager {
         return mMoviesApi;
     }
 
+    @NonNull
+    private ReviewsApi getReviewsApi() {
+        if (mReviewsApi != null) {
+            mReviewsApi.clearListener();
+        }
+        mReviewsApi = new ReviewsApi();
+        return mReviewsApi;
+    }
+
+    @NonNull
+    private VideosApi getVideosApi() {
+        if (mVideosApi != null) {
+            mVideosApi.clearListener();
+        }
+        mVideosApi = new VideosApi();
+        return mVideosApi;
+    }
+
     /**
      * Fetch movies list.
      *
@@ -63,11 +100,11 @@ public class ApiManager {
      * @param sortOrder the sort order
      * @param pageCount the page count
      */
-    public void fetchMoviesList(ProgressListener<BaseResponseBean> listener, String sortOrder, int pageCount) {
+    public void fetchMoviesList(ProgressListener<BaseMovieBean> listener, String sortOrder, int pageCount) {
 
-        apiFetchListener = listener;
-        if (apiFetchListener != null) {
-            apiFetchListener.inProgress();
+        moviesFetchListener = listener;
+        if (moviesFetchListener != null) {
+            moviesFetchListener.inProgress();
         }
         if (isMoviesAPILoading) {
             return;
@@ -76,25 +113,112 @@ public class ApiManager {
 
         getMoviesApi().fetchMoviesList(new BaseApi.BaseAPIListener() {
             @Override
-            public void requestCompleted(BaseResponseBean response) {
+            public void requestCompleted(BaseBean response) {
                 isMoviesAPILoading = false;
                 // return data
-                if (apiFetchListener != null) {
-                    apiFetchListener.completed(response);
-                    apiFetchListener = null;
+                if (moviesFetchListener != null) {
+                    BaseMovieBean responseBean = (BaseMovieBean) response;
+                    moviesFetchListener.completed(responseBean);
+                    moviesFetchListener = null;
                 }
             }
 
             @Override
-            public void requestFailed(RetrofitError error) {
+            public void requestFailed(@NonNull RetrofitError error) {
+                isMoviesAPILoading = false;
                 // return error
-                if (apiFetchListener != null) {
-                    apiFetchListener.failed(error.getMessage());
-                    apiFetchListener = null;
+                if (moviesFetchListener != null) {
+                    moviesFetchListener.failed(error.getMessage());
+                    moviesFetchListener = null;
                 }
             }
 
         }, sortOrder, pageCount);
+    }
+
+    /**
+     * Fetch reviews list.
+     *
+     * @param listener  the listener
+     * @param movieId   the movie id
+     * @param pageCount the page count
+     */
+    public void fetchReviewsList(ProgressListener<BaseReviewBean> listener, long movieId, int pageCount) {
+
+        reviewFetchListener = listener;
+        if (reviewFetchListener != null) {
+            reviewFetchListener.inProgress();
+        }
+        if (isReviewsAPILoading) {
+            return;
+        }
+        isReviewsAPILoading = true;
+
+        getReviewsApi().fetchReviewsList(new BaseApi.BaseAPIListener() {
+            @Override
+            public void requestCompleted(BaseBean response) {
+                isReviewsAPILoading = false;
+                // return data
+                if (reviewFetchListener != null) {
+                    BaseReviewBean responseBean = (BaseReviewBean) response;
+                    reviewFetchListener.completed(responseBean);
+                    reviewFetchListener = null;
+                }
+            }
+
+            @Override
+            public void requestFailed(@NonNull RetrofitError error) {
+                // return error
+                isReviewsAPILoading = false;
+                if (reviewFetchListener != null) {
+                    reviewFetchListener.failed(error.getMessage());
+                    reviewFetchListener = null;
+                }
+            }
+
+        }, movieId, pageCount);
+    }
+
+    /**
+     * Fetch videos list.
+     *
+     * @param listener the listener
+     * @param movieId  the movie id
+     */
+    public void fetchVideosList(ProgressListener<BaseVideoBean> listener, long movieId) {
+
+        videoFetchListener = listener;
+        if (videoFetchListener != null) {
+            videoFetchListener.inProgress();
+        }
+        if (isVideosAPILoading) {
+            return;
+        }
+        isVideosAPILoading = true;
+
+        getVideosApi().fetchVideosList(new BaseApi.BaseAPIListener() {
+            @Override
+            public void requestCompleted(BaseBean response) {
+                isVideosAPILoading = false;
+                // return data
+                if (videoFetchListener != null) {
+                    BaseVideoBean responseBean = (BaseVideoBean)response;
+                    videoFetchListener.completed(responseBean);
+                    videoFetchListener = null;
+                }
+            }
+
+            @Override
+            public void requestFailed(@NonNull RetrofitError error) {
+                isVideosAPILoading = false;
+                // return error
+                if (videoFetchListener != null) {
+                    videoFetchListener.failed(error.getMessage());
+                    videoFetchListener = null;
+                }
+            }
+
+        }, movieId);
     }
 
     /**

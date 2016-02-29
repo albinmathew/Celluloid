@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2016. Albin Mathew
   ~
@@ -15,14 +16,15 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".details.MovieDetailsActivity">
-
-    <FrameLayout
-        android:id="@+id/movie_detail_container"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <View
+        android:id="@+id/view5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="1dp"
+        android:padding="@dimen/divider_padding"
+        android:layout_marginRight="@dimen/divider_margin"
+        android:layout_marginLeft="@dimen/divider_margin"
+        android:background="@color/separator_light_gray" />
 </LinearLayout>

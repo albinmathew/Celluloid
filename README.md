@@ -1,11 +1,14 @@
 # Celluloid
 
-Stage 1 of the popular movies project made from scratch for Android Developer Nanodegree program.
+Stage 2 of the popular movies project made from scratch for Android Developer Nanodegree program.
 
 ## Features
 
 With the app, you can:
 * Discover the most popular, the most rated or the highest rated movies
+* Save favorite movies locally to view them even when offline
+* Watch trailers
+* Read reviews
 
 ## How to Work with the Source
 
@@ -14,7 +17,8 @@ You must provide your own API key in order to build the app.
 
 ## Screens
 
-![screen](../stage1/art/movies_grid.png)   ![screen](../stage1/art/movie_detail.png)
+![screen](../stage2/art/movies_grid.png) ![screen](../stage2/art/movie_detail.png)
+![screen](../stage2/art/movie_detail_tab.png)![screen](../stage2/art/movies_grid_portrait.png) ![screen](../stage2/art/movie_sort.png) ![screen](../stage2/art/movie_grid_tab.png) 
 
 
 ## License

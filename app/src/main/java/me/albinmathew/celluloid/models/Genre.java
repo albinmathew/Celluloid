@@ -18,6 +18,7 @@ package me.albinmathew.celluloid.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -28,12 +29,40 @@ import com.google.gson.annotations.SerializedName;
  * @date 8 /2/16
  */
 public class Genre implements Parcelable {
+    /**
+     * The constant CREATOR.
+     */
+    public static final Parcelable.Creator<Genre> CREATOR = new Parcelable.Creator<Genre>() {
+        @NonNull
+        public Genre createFromParcel(@NonNull Parcel source) {
+            return new Genre(source);
+        }
+
+        @NonNull
+        public Genre[] newArray(int size) {
+            return new Genre[size];
+        }
+    };
     @SerializedName("id")
     private int id;
-
     @SerializedName("name")
     private String name;
 
+    /**
+     * Instantiates a new Genre.
+     */
+    public Genre() {
+    }
+
+    /**
+     * Instantiates a new Genre.
+     *
+     * @param in the in
+     */
+    private Genre(@NonNull Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+    }
 
     /**
      * Gets id.
@@ -77,37 +106,8 @@ public class Genre implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeString(this.name);
     }
-
-    /**
-     * Instantiates a new Genre.
-     */
-    public Genre() {
-    }
-
-    /**
-     * Instantiates a new Genre.
-     *
-     * @param in the in
-     */
-    private Genre(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-    }
-
-    /**
-     * The constant CREATOR.
-     */
-    public static final Parcelable.Creator<Genre> CREATOR = new Parcelable.Creator<Genre>() {
-        public Genre createFromParcel(Parcel source) {
-            return new Genre(source);
-        }
-
-        public Genre[] newArray(int size) {
-            return new Genre[size];
-        }
-    };
 }

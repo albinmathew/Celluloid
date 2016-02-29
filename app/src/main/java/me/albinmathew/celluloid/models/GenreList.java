@@ -18,6 +18,7 @@ package me.albinmathew.celluloid.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -28,7 +29,36 @@ import java.util.List;
  * @date 8 /2/16
  */
 public class GenreList implements Parcelable {
+    /**
+     * The constant CREATOR.
+     */
+    public static final Parcelable.Creator<GenreList> CREATOR = new Parcelable.Creator<GenreList>() {
+        @NonNull
+        public GenreList createFromParcel(@NonNull Parcel source) {
+            return new GenreList(source);
+        }
+
+        @NonNull
+        public GenreList[] newArray(int size) {
+            return new GenreList[size];
+        }
+    };
     private List<Genre> genres;
+
+    /**
+     * Instantiates a new Genre list.
+     */
+    public GenreList() {
+    }
+
+    /**
+     * Instantiates a new Genre list.
+     *
+     * @param in the in
+     */
+    protected GenreList(@NonNull Parcel in) {
+        this.genres = in.createTypedArrayList(Genre.CREATOR);
+    }
 
     /**
      * Gets genres.
@@ -54,35 +84,7 @@ public class GenreList implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeTypedList(genres);
     }
-
-    /**
-     * Instantiates a new Genre list.
-     */
-    public GenreList() {
-    }
-
-    /**
-     * Instantiates a new Genre list.
-     *
-     * @param in the in
-     */
-    protected GenreList(Parcel in) {
-        this.genres = in.createTypedArrayList(Genre.CREATOR);
-    }
-
-    /**
-     * The constant CREATOR.
-     */
-    public static final Parcelable.Creator<GenreList> CREATOR = new Parcelable.Creator<GenreList>() {
-        public GenreList createFromParcel(Parcel source) {
-            return new GenreList(source);
-        }
-
-        public GenreList[] newArray(int size) {
-            return new GenreList[size];
-        }
-    };
 }

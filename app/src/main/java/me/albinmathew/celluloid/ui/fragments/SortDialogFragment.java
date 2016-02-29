@@ -21,11 +21,15 @@ import android.app.DialogFragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RadioButton;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import me.albinmathew.celluloid.R;
 import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.listener.SortSelectListener;
@@ -38,13 +42,22 @@ import me.albinmathew.celluloid.listener.SortSelectListener;
  */
 public class SortDialogFragment extends DialogFragment {
 
-    private Dialog mDialog;
-    private RadioButton mButtonPopularity;
-    private RadioButton mButtonRating;
-    private SortSelectListener mSortSelectListener;
-    private String mCurrentSortOrder;
+    /**
+     * The constant STATE_SORT_LISTENER.
+     */
+    public static final String STATE_SORT_LISTENER = "state_sort_listener";
     private static final String STATE_CURRENT_SORT_SELECTION = "state_movies_current_sort";
-    public static final String STATE_SORT_LISTENER  =   "state_sort_listener";
+    private SortSelectListener mSortSelectListener;
+    @Nullable
+    private String mCurrentSortOrder;
+    private Dialog mDialog;
+
+    @Bind(R.id.button_sort_popularity)
+    public RadioButton mButtonPopularity;
+    @Bind(R.id.button_sort_mostrated)
+    public RadioButton mButtonRating;
+    @Bind(R.id.button_favourites)
+    public RadioButton mButtonFavourite;
 
     /**
      * Instantiates a new Sort dialog fragment.
@@ -57,17 +70,23 @@ public class SortDialogFragment extends DialogFragment {
      *
      * @return the sort dialog fragment
      */
+    @NonNull
     public static SortDialogFragment newInstance() {
         return new SortDialogFragment();
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         mDialog = new Dialog(getActivity());
         mDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mDialog.setContentView(R.layout.dialog_sort);
-        setUpViews(mDialog, savedInstanceState);
+        ButterKnife.bind(this, mDialog);
+
+        if (savedInstanceState != null) {
+            mCurrentSortOrder = savedInstanceState.getString(STATE_CURRENT_SORT_SELECTION);
+        }
+        toggle();
         onClickListeners();
         mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         mDialog.setCancelable(false);
@@ -77,9 +96,16 @@ public class SortDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_CURRENT_SORT_SELECTION, mCurrentSortOrder);
+    }
+
+    @Override
     public void onDestroyView() {
-        if (getDialog() != null && getRetainInstance())
+        if (getDialog() != null && getRetainInstance()) {
             getDialog().setDismissMessage(null);
+        }
         super.onDestroyView();
     }
 
@@ -91,10 +117,9 @@ public class SortDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mSortSelectListener != null) {
-                    if(!getCurrentSortOrder().equals(CAConstants.POPULARITY)){
-                        mButtonPopularity.toggle();
-                    }
-                    mSortSelectListener.onSortCategorySelected(CAConstants.POPULARITY);
+                    mCurrentSortOrder = CAConstants.POPULARITY;
+                    toggle();
+                    mSortSelectListener.onSortCategorySelected(mCurrentSortOrder);
                     mDialog.dismiss();
                 }
             }
@@ -103,33 +128,38 @@ public class SortDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (mSortSelectListener != null) {
-                    if(!getCurrentSortOrder().equals(CAConstants.VOTE_AVERAGE)){
-                        mButtonRating.toggle();
-                    }
-                    mSortSelectListener.onSortCategorySelected(CAConstants.VOTE_AVERAGE);
+                    mCurrentSortOrder = CAConstants.VOTE_AVERAGE;
+                    toggle();
+                    mSortSelectListener.onSortCategorySelected(mCurrentSortOrder);
+                    mDialog.dismiss();
+                }
+            }
+        });
+        mButtonFavourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSortSelectListener != null) {
+                    mCurrentSortOrder = CAConstants.FAVOURITES;
+                    toggle();
+                    mSortSelectListener.onSortCategorySelected(mCurrentSortOrder);
                     mDialog.dismiss();
                 }
             }
         });
     }
 
-    private void setUpViews(Dialog dialog, Bundle savedInstanceState) {
-        mButtonRating = (RadioButton) dialog.findViewById(R.id.button_sort_mostrated);
-        mButtonPopularity = (RadioButton) dialog.findViewById(R.id.button_sort_popularity);
-        if(savedInstanceState!=null){
-            mCurrentSortOrder = savedInstanceState.getString(STATE_CURRENT_SORT_SELECTION);
+    private void toggle() {
+        switch (getCurrentSortOrder()) {
+            case CAConstants.POPULARITY:
+                mButtonPopularity.toggle();
+                break;
+            case CAConstants.VOTE_AVERAGE:
+                mButtonRating.toggle();
+                break;
+            default:
+                mButtonFavourite.toggle();
+                break;
         }
-        if(getCurrentSortOrder().equals(CAConstants.POPULARITY)){
-           mButtonPopularity.toggle();
-        }else{
-            mButtonRating.toggle();
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(STATE_CURRENT_SORT_SELECTION, mCurrentSortOrder);
     }
 
     /**
@@ -146,6 +176,7 @@ public class SortDialogFragment extends DialogFragment {
      *
      * @return the current sort order
      */
+    @Nullable
     private String getCurrentSortOrder() {
         return mCurrentSortOrder;
     }

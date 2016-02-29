@@ -23,8 +23,15 @@
 
     <!-- Browse Movies -->
     <item name="movie_item_image_aspect_ratio" format="float" type="dimen">.675</item>
-    <!-- Movie Details -->
-    <item name="movie_details_cover_aspect_ratio" format="float" type="dimen">1.77</item>
-    <dimen name="app_bar_height">180dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="item_width">400dp</dimen>
+    <dimen name="video_width">150dp</dimen>
+    <dimen name="video_height">150dp</dimen>
+    <dimen name="trailer_margin">5dp</dimen>
+    <dimen name="heading_padding">10dp</dimen>
+    <dimen name="general_margin_top">10dp</dimen>
+    <dimen name="divider_margin">25dp</dimen>
+    <dimen name="divider_padding">5dp</dimen>
+    <dimen name="card_view_margin">5dp</dimen>
 </resources>

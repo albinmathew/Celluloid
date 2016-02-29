@@ -17,6 +17,7 @@
 package me.albinmathew.celluloid.app;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import me.albinmathew.celluloid.api.http.RestClient;
 import me.albinmathew.celluloid.models.Genre;
@@ -36,9 +38,9 @@ import me.albinmathew.celluloid.models.GenreList;
  * @date 1 /2/16
  */
 public class CelluloidApp extends Application {
+    private static final Map<Integer, String> genreMap = new HashMap<>();
     private static CelluloidApp sCelluloidApp;
-    private static RestClient sRestClient;
-    private static final HashMap<Integer, String> genreMap =new HashMap<>();
+    private static RestClient   sRestClient;
 
     /**
      * Gets rest client.
@@ -54,7 +56,8 @@ public class CelluloidApp extends Application {
      *
      * @return the genre map
      */
-    public static HashMap<Integer, String> getGenreMap() {
+    @NonNull
+    public static Map<Integer, String> getGenreMap() {
         return genreMap;
     }
 
@@ -91,11 +94,11 @@ public class CelluloidApp extends Application {
             InputStream is = this.getAssets().open("genre.json");
             int size = is.available();
             byte[] buffer = new byte[size];
+            //noinspection ResultOfMethodCallIgnored
             is.read(buffer);
             is.close();
             json = new String(buffer, "UTF-8");
         } catch (IOException ex) {
-            ex.printStackTrace();
             return null;
         }
         return json;

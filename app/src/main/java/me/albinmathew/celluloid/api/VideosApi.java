@@ -19,7 +19,7 @@ package me.albinmathew.celluloid.api;
 import android.support.annotation.Nullable;
 
 import me.albinmathew.celluloid.api.base.BaseApi;
-import me.albinmathew.celluloid.api.base.BaseMovieBean;
+import me.albinmathew.celluloid.api.base.BaseVideoBean;
 import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.app.CelluloidApp;
 import retrofit.Callback;
@@ -27,12 +27,12 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * The type Movies api.
+ * The type Videos api.
  *
  * @author albin
- * @date 2 /2/16
+ * @date 16/2/16
  */
-public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
+public class VideosApi extends BaseApi implements Callback<BaseVideoBean> {
 
     @Nullable
     private BaseAPIListener otBaseApiListener = null;
@@ -40,19 +40,18 @@ public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
     /**
      * Instantiates a new Movies api.
      */
-    public MoviesApi() {
+    public VideosApi() {
     }
 
     /**
      * Fetch movies list.
      *
      * @param apiListener the api listener
-     * @param sortOrder   the sort order
-     * @param pageCount   the page count
+     * @param movieId     the movie id
      */
-    public void fetchMoviesList(BaseAPIListener apiListener, String sortOrder, int pageCount) {
+    public void fetchVideosList(BaseAPIListener apiListener, long movieId) {
         otBaseApiListener = apiListener;
-        CelluloidApp.getRestClient().getMovieDbService().getMoviesList(sortOrder, CAConstants.API_KEY, pageCount, false, this);
+        CelluloidApp.getRestClient().getMovieDbService().getVideosList(movieId, CAConstants.API_KEY, this);
     }
 
     /**
@@ -69,7 +68,7 @@ public class MoviesApi extends BaseApi implements Callback<BaseMovieBean> {
     }
 
     @Override
-    public void success(BaseMovieBean responseBean, Response response) {
+    public void success(BaseVideoBean responseBean, Response response) {
         successResponse(responseBean, response);
     }
 

@@ -17,8 +17,10 @@
 package me.albinmathew.celluloid.utilities;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.text.ParseException;
@@ -27,6 +29,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import me.albinmathew.celluloid.api.response.MoviesResponseBean;
+import me.albinmathew.celluloid.api.response.VideoResponseBean;
+import me.albinmathew.celluloid.app.CAConstants;
 import me.albinmathew.celluloid.app.CelluloidApp;
 
 /**
@@ -37,6 +41,10 @@ import me.albinmathew.celluloid.app.CelluloidApp;
  */
 public class CommonUtil {
 
+    /**
+     * The constant strSeparator.
+     */
+    public static final String strSeparator = "__,__";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     /**
@@ -45,7 +53,7 @@ public class CommonUtil {
      * @param context context
      * @return hasInternet boolean
      */
-    public static boolean hasInternetAccess(Context context) {
+    public static boolean hasInternetAccess(@NonNull Context context) {
         try {
             boolean hasInternet = false;
 
@@ -75,7 +83,7 @@ public class CommonUtil {
      * @param context context
      * @return hasInternet boolean
      */
-    public static boolean hasWifiInternetAccess(Context context) {
+    public static boolean hasWifiInternetAccess(@NonNull Context context) {
         try {
             boolean hasWifiInternet = false;
             ConnectivityManager cm = (ConnectivityManager) context
@@ -101,7 +109,7 @@ public class CommonUtil {
      * @param context context
      * @return hasInternet boolean
      */
-    public static boolean has3gInternetAccess(Context context) {
+    public static boolean has3gInternetAccess(@NonNull Context context) {
         try {
             boolean has3gInternet = false;
             ConnectivityManager cm = (ConnectivityManager) context
@@ -127,8 +135,11 @@ public class CommonUtil {
      * @param releaseDate release date in yyyy-MM-dd format
      * @return month and year
      */
+    @NonNull
     public static String getDisplayReleaseDate(String releaseDate) {
-        if (TextUtils.isEmpty(releaseDate)) return "";
+        if (TextUtils.isEmpty(releaseDate)) {
+            return "";
+        }
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(DATE_FORMAT.parse(releaseDate));
@@ -144,12 +155,93 @@ public class CommonUtil {
      * @param movies the movies
      * @return the genre
      */
-    public static String getGenreList(MoviesResponseBean movies){
+    public static String getGenreList(@NonNull MoviesResponseBean movies) {
         String genre = "";
-        for (int id: movies.getGenreId()) {
-            genre += CelluloidApp.getGenreMap().get(id).concat(", ");
+        if (movies.getGenreId() != null) {
+            for (int id : movies.getGenreId()) {
+                if (CelluloidApp.getGenreMap().get(id) != null) {
+                    genre += CelluloidApp.getGenreMap().get(id).concat(", ");
+                }
+            }
         }
-        genre = genre.replaceAll(" $","").replaceAll(",$", "");
+        genre = genre.replaceAll(" $", "").replaceAll(",$", "");
         return genre;
+    }
+
+    /**
+     * Is tablet boolean.
+     *
+     * @param context given context
+     * @return true if its a tablet
+     */
+    public static boolean isTablet(@NonNull Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+    /**
+     * Gets url.
+     *
+     * @param video the video
+     * @return the url
+     */
+    public static String getUrl(@NonNull VideoResponseBean video) {
+        if (CAConstants.SITE_YOUTUBE.equalsIgnoreCase(video.getSite())) {
+            return String.format("http://www.youtube.com/watch?v=%1$s", video.getVideoId());
+        } else {
+            return CAConstants.EMPTY;
+        }
+    }
+
+    /**
+     * Gets thumbnail url.
+     *
+     * @param video the video
+     * @return the thumbnail url
+     */
+    public static String getThumbnailUrl(@NonNull VideoResponseBean video) {
+        if (CAConstants.SITE_YOUTUBE.equalsIgnoreCase(video.getSite())) {
+            return String.format("http://img.youtube.com/vi/%1$s/0.jpg", video.getVideoId());
+        } else {
+            return CAConstants.EMPTY;
+        }
+    }
+
+    /**
+     * Convert int array to string string.
+     *
+     * @param array the array
+     * @return the string
+     */
+    @NonNull
+    public static String convertArrayToString(@NonNull int[] array) {
+        String str = "";
+        for (int i = 0; i < array.length; i++) {
+            str = str + array[i];
+            // Do not append comma at the end of last element
+            if (i < array.length - 1) {
+                str = str + strSeparator;
+            }
+        }
+        return str;
+    }
+
+    /**
+     * Convert string to array int array.
+     *
+     * @param str the str
+     * @return the int []
+     */
+    @NonNull
+    public static int[] convertStringToArray(@NonNull String str) {
+        String[] arr = str.split(strSeparator);
+        int[] num = new int[arr.length];
+        for (int curr = 0; curr < arr.length; curr++) {
+            if (arr[curr].length() > 0 && arr[curr] != null) {
+                num[curr] = Integer.parseInt(arr[curr]);
+            }
+        }
+        return num;
     }
 }
