@@ -1,6 +1,6 @@
 # Celluloid
 
-Stage 2 of the popular movies project made from scratch for Android Developer Nanodegree program.
+Stage 1 and 2 of the popular movies project made from scratch for Android Developer Nanodegree program.
 
 ## Features
 
@@ -17,8 +17,8 @@ You must provide your own API key in order to build the app.
 
 ## Screens
 
-![screen](../stage2/art/movies_grid.png) ![screen](../stage2/art/movie_detail.png)
-![screen](../stage2/art/movie_detail_tab.png)![screen](../stage2/art/movies_grid_portrait.png) ![screen](../stage2/art/movie_sort.png) ![screen](../stage2/art/movie_grid_tab.png) 
+![screen](../master/art/movies_grid.png) ![screen](../master/art/movie_detail.png)
+![screen](../master/art/movie_detail_tab.png)![screen](../master/art/movies_grid_portrait.png) ![screen](../master/art/movie_sort.png) ![screen](../master/art/movie_grid_tab.png) 
 
 
 ## License
