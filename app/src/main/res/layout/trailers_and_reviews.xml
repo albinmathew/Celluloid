@@ -15,51 +15,48 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <TextView
         android:id="@+id/trailers_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:paddingTop="@dimen/heading_padding"
+        android:paddingLeft="@dimen/heading_padding"
         android:text="@string/trailers"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@android:color/black"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <HorizontalScrollView
         android:id="@+id/trailers_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:paddingBottom="10dp"
+        android:padding="@dimen/heading_padding"
         android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/trailers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+            android:orientation="horizontal"/>
 
     </HorizontalScrollView>
 
-    <View
-        android:id="@+id/view5"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/separator_light_gray" />
+    <include layout="@layout/divider"/>
 
     <TextView
         android:id="@+id/reviews_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:paddingTop="@dimen/heading_padding"
+        android:paddingLeft="@dimen/heading_padding"
         android:text="@string/reviews"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@android:color/black"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/reviews"
@@ -67,7 +64,7 @@
         android:layout_height="wrap_content"
         android:clipChildren="false"
         android:orientation="vertical"
-        android:padding="10dp"
+        android:padding="@dimen/heading_padding"
         android:textColor="@android:color/black"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 </LinearLayout>

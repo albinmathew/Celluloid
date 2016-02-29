@@ -25,7 +25,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_margin="@dimen/card_view_margin">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="5dp">
+                android:padding="@dimen/card_view_margin">
 
                 <me.albinmathew.celluloid.ui.widget.CAImageView
                     android:id="@+id/poster_image"
@@ -45,7 +45,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
                     app:imageAspectRatio="@dimen/movie_item_image_aspect_ratio"
-                    tools:src="@drawable/placeholder_movie_item_image" />
+                    tools:src="@drawable/placeholder_movie_item_image"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -57,89 +57,81 @@
                         android:id="@+id/movie_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
+                        android:padding="@dimen/card_view_margin"
                         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"/>
 
                     <TextView
                         android:id="@+id/release_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black" />
+                        android:padding="@dimen/card_view_margin"
+                        android:textColor="@android:color/black"/>
 
                     <TextView
                         android:id="@+id/rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:padding="5dp"
+                        android:padding="@dimen/card_view_margin"
                         android:singleLine="true"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"/>
 
                     <TextView
                         android:id="@+id/votes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:padding="5dp"
+                        android:padding="@dimen/card_view_margin"
                         android:singleLine="true"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"/>
 
                     <TextView
                         android:id="@+id/genres"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black" />
+                        android:padding="@dimen/card_view_margin"
+                        android:textColor="@android:color/black"/>
                 </LinearLayout>
             </LinearLayout>
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/separator_light_gray" />
+            <include layout="@layout/divider"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/card_view_margin"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/description_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:paddingTop="@dimen/heading_padding"
+                    android:paddingLeft="@dimen/heading_padding"
                     android:text="@string/overview"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textColor="@android:color/black"
-                    android:visibility="visible" />
+                    android:visibility="visible"/>
 
                 <TextView
                     android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginTop="5dp"
-                    android:padding="10dp"
+                    android:padding="@dimen/heading_padding"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/black"/>
             </LinearLayout>
 
-            <View
-                android:id="@+id/view4"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/separator_light_gray" />
+            <include layout="@layout/divider"/>
 
             <include
                 layout="@layout/trailers_and_reviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

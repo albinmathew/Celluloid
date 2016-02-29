@@ -229,7 +229,7 @@ public class MoviesActivity extends AppCompatActivity implements SwipeRefreshLay
      */
     private void showFavouriteMovies() {
         mCurrentSortSelection = CAConstants.FAVOURITES;
-        Cursor cursor = getContentResolver().query(MovieContract.Movie.CONTENT_URI, null, null, null, null);
+        Cursor cursor = getContentResolver().query(MovieContract.Movie.CONTENT_URI, null, null, null, MovieContract.Movie._ID+" DESC");
         ArrayList<MoviesResponseBean> mPosterList = new ArrayList<>();
         if (cursor != null) {
             while (cursor.moveToNext()) {
