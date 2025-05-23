@@ -30,13 +30,11 @@
         <meta-data
             android:name="me.albinmathew.celluloid.utilities.GlideConfig"
             android:value="GlideModule" />
-        <provider
-            android:name=".data.MovieProvider"
-            android:authorities="me.albinmathew.celluloid"
-            tools:ignore="ExportedContentProvider" />
+        <!-- MovieProvider was part of the old data layer, removed -->
 
         <activity
-            android:name=".ui.activities.MoviesActivity"
+            android:name=".ui.activities.MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -45,14 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activities.MovieDetailsActivity"
-            android:label="@string/title_activity_movie_details"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.activities.AboutActivity"
-            android:label="@string/title_activity_about"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!-- MovieDetailsActivity and AboutActivity are now handled by Compose Navigation -->
     </application>
 
 </manifest>

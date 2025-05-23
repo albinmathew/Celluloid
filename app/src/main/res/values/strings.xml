@@ -16,12 +16,12 @@
 
 <resources>
     <string name="app_name">Celluloid</string>
-    <string name="action_settings">About</string>
-    <string name="title_activity_movie_details">MovieDetailsActivity</string>
-    <string name="movie_details_rating">Average Rating: %1$s</string>
-    <string name="movie_details_votes">Vote Count: %1$s</string>
-    <string name="movie_details_genre">Genre: %1$s</string>
-    <string name="title_activity_about">About</string>
+    <!-- <string name="action_settings">About</string> --> <!-- Removed -->
+    <!-- <string name="title_activity_movie_details">MovieDetailsActivity</string> --> <!-- Removed -->
+    <!-- <string name="movie_details_rating">Average Rating: %1$s</string> --> <!-- Removed -->
+    <!-- <string name="movie_details_votes">Vote Count: %1$s</string> --> <!-- Removed -->
+    <!-- <string name="movie_details_genre">Genre: %1$s</string> --> <!-- Removed -->
+    <string name="title_activity_about">About</string> <!-- Keep this for AboutScreen title -->
     <string name="about_text">
           \n
           Celluloid \n\n
@@ -36,13 +36,13 @@
           \n
     </string>
     <string name="text_popular">Popular</string>
-    <string name="text_filter">FILTER</string>
+    <!-- <string name="text_filter">FILTER</string> --> <!-- Removed -->
     <string name="text_rated">Rated</string>
-    <string name="text_sort">SORT</string>
+    <!-- <string name="text_sort">SORT</string> --> <!-- Removed -->
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
     <string name="overview">Overview</string>
     <string name="favourites">Favourites</string>
-    <string name="action_share">Share</string>
-    <string name="backdrop">backdrop_image</string>
+    <!-- <string name="action_share">Share</string> --> <!-- Removed -->
+    <!-- <string name="backdrop">backdrop_image</string> --> <!-- Removed -->
 </resources>
